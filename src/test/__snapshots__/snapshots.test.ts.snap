@@ -1,0 +1,294 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`Snapshot Tests - Key Outputs > Fairness Reports - snapshots > should produce consistent fairness reports for F-priority mode > scenario-a-f-priority-fairness 1`] = `
+{
+  "deviation": {
+    "F": 18,
+    "H": 10,
+    "K": 7,
+    "total": 14,
+  },
+  "perTeacher": {
+    "(미배정)": {
+      "F": 0,
+      "H": 4,
+      "K": 0,
+      "total": 4,
+    },
+    "John": {
+      "F": 18,
+      "H": 0,
+      "K": 0,
+      "total": 18,
+    },
+    "김선생": {
+      "F": 0,
+      "H": 10,
+      "K": 7,
+      "total": 17,
+    },
+    "박선생": {
+      "F": 0,
+      "H": 9,
+      "K": 7,
+      "total": 16,
+    },
+    "이선생": {
+      "F": 0,
+      "H": 6,
+      "K": 7,
+      "total": 13,
+    },
+    "최선생": {
+      "F": 0,
+      "H": 9,
+      "K": 7,
+      "total": 16,
+    },
+  },
+}
+`;
+
+exports[`Snapshot Tests - Key Outputs > Fairness Reports - snapshots > should produce consistent fairness reports for H-priority mode > scenario-a-h-priority-fairness 1`] = `
+{
+  "deviation": {
+    "F": 18,
+    "H": 10,
+    "K": 7,
+    "total": 14,
+  },
+  "perTeacher": {
+    "(미배정)": {
+      "F": 0,
+      "H": 4,
+      "K": 0,
+      "total": 4,
+    },
+    "John": {
+      "F": 18,
+      "H": 0,
+      "K": 0,
+      "total": 18,
+    },
+    "김선생": {
+      "F": 0,
+      "H": 10,
+      "K": 7,
+      "total": 17,
+    },
+    "박선생": {
+      "F": 0,
+      "H": 9,
+      "K": 7,
+      "total": 16,
+    },
+    "이선생": {
+      "F": 0,
+      "H": 6,
+      "K": 7,
+      "total": 13,
+    },
+    "최선생": {
+      "F": 0,
+      "H": 9,
+      "K": 7,
+      "total": 16,
+    },
+  },
+}
+`;
+
+exports[`Snapshot Tests - Key Outputs > Fairness Reports - snapshots > should produce consistent fairness reports for scenario A > scenario-a-fairness 1`] = `
+{
+  "deviation": {
+    "F": 18,
+    "H": 10,
+    "K": 7,
+    "total": 14,
+  },
+  "perTeacher": {
+    "(미배정)": {
+      "F": 0,
+      "H": 4,
+      "K": 0,
+      "total": 4,
+    },
+    "John": {
+      "F": 18,
+      "H": 0,
+      "K": 0,
+      "total": 18,
+    },
+    "김선생": {
+      "F": 0,
+      "H": 10,
+      "K": 7,
+      "total": 17,
+    },
+    "박선생": {
+      "F": 0,
+      "H": 9,
+      "K": 7,
+      "total": 16,
+    },
+    "이선생": {
+      "F": 0,
+      "H": 6,
+      "K": 7,
+      "total": 13,
+    },
+    "최선생": {
+      "F": 0,
+      "H": 9,
+      "K": 7,
+      "total": 16,
+    },
+  },
+}
+`;
+
+exports[`Snapshot Tests - Key Outputs > Fairness Reports - snapshots > should produce consistent fairness reports for scenario E > scenario-e-fairness 1`] = `
+{
+  "deviation": {
+    "F": 8,
+    "H": 10,
+    "K": 8,
+    "total": 13,
+  },
+  "perTeacher": {
+    "H-R3C3": {
+      "F": 0,
+      "H": 2,
+      "K": 2,
+      "total": 4,
+    },
+    "H-R4C1": {
+      "F": 0,
+      "H": 4,
+      "K": 2,
+      "total": 6,
+    },
+    "H-R4C2": {
+      "F": 0,
+      "H": 4,
+      "K": 2,
+      "total": 6,
+    },
+    "H-R4C3": {
+      "F": 0,
+      "H": 4,
+      "K": 1,
+      "total": 5,
+    },
+    "John": {
+      "F": 8,
+      "H": 0,
+      "K": 0,
+      "total": 8,
+    },
+    "Mike": {
+      "F": 8,
+      "H": 0,
+      "K": 0,
+      "total": 8,
+    },
+    "Sarah": {
+      "F": 8,
+      "H": 0,
+      "K": 0,
+      "total": 8,
+    },
+    "김선생": {
+      "F": 0,
+      "H": 10,
+      "K": 7,
+      "total": 17,
+    },
+    "박선생": {
+      "F": 0,
+      "H": 10,
+      "K": 7,
+      "total": 17,
+    },
+    "이선생": {
+      "F": 0,
+      "H": 6,
+      "K": 8,
+      "total": 14,
+    },
+    "최선생": {
+      "F": 0,
+      "H": 8,
+      "K": 7,
+      "total": 15,
+    },
+  },
+}
+`;
+
+exports[`Snapshot Tests - Key Outputs > Scenario A: Optimal case - warnings snapshot > should produce minimal warnings for feasible scenario > scenario-a-warnings 1`] = `
+[
+  "[금 2] R1C2 H 배정 실패",
+  "[금 4] R2C2 H 배정 실패",
+  "[화 2] R1C3 R1 H 배정 실패",
+  "[목 2] R1C3 R1 H 배정 실패",
+]
+`;
+
+exports[`Snapshot Tests - Key Outputs > Scenario B: Infeasible case - warnings snapshot > should produce critical warnings for infeasible scenario > scenario-b-warnings 1`] = `
+[
+  "[금 2] R1C2 H 배정 실패",
+  "[금 4] R2C2 H 배정 실패",
+  "[화 2] R1C3 R1 H 배정 실패",
+  "[화 3] R1C4 R1 F 배정 실패",
+  "[목 2] R1C3 R1 H 배정 실패",
+  "[목 3] R1C4 R1 F 배정 실패",
+]
+`;
+
+exports[`Snapshot Tests - Key Outputs > Scenario D: Korean shortage - warnings snapshot > should produce Korean teacher shortage warnings > scenario-d-warnings 1`] = `
+[
+  "[화 4] R2C1 R2 H 배정 실패",
+  "[화 5] R2C1 R2 H 배정 실패",
+  "[화 6] R2C2 R2 K 배정 실패",
+  "[화 4] R2C3 R2 H 배정 실패",
+  "[화 5] R2C3 R2 H 배정 실패",
+  "[화 6] R2C3 R2 K 배정 실패",
+  "[목 4] R2C1 R2 H 배정 실패",
+  "[목 5] R2C1 R2 H 배정 실패",
+  "[목 6] R2C2 R2 K 배정 실패",
+  "[목 4] R2C3 R2 H 배정 실패",
+  "[목 5] R2C3 R2 H 배정 실패",
+  "[목 6] R2C3 R2 K 배정 실패",
+]
+`;
+
+exports[`Snapshot Tests - Key Outputs > TT Feasibility Reports - snapshots > should produce consistent feasibility reports for scenario A > scenario-a-tt-feasibility 1`] = `
+{
+  "r1ForeignCapacity": 6,
+  "r1ForeignDemand": 6,
+  "r1ForeignOk": true,
+  "r2HNeeded": 12,
+  "r2KNeeded": 6,
+}
+`;
+
+exports[`Snapshot Tests - Key Outputs > TT Feasibility Reports - snapshots > should produce consistent feasibility reports for scenario B > scenario-b-tt-feasibility 1`] = `
+{
+  "r1ForeignCapacity": 6,
+  "r1ForeignDemand": 8,
+  "r1ForeignOk": false,
+  "r2HNeeded": 12,
+  "r2KNeeded": 6,
+}
+`;
+
+exports[`Snapshot Tests - Key Outputs > TT Feasibility Reports - snapshots > should produce consistent feasibility reports for scenario D > scenario-d-tt-feasibility 1`] = `
+{
+  "r1ForeignCapacity": 18,
+  "r1ForeignDemand": 6,
+  "r1ForeignOk": true,
+  "r2HNeeded": 12,
+  "r2KNeeded": 6,
+}
+`;

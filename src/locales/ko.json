@@ -1,0 +1,202 @@
+{
+  "common": {
+    "loading": "로딩 중...",
+    "error": "오류",
+    "success": "성공",
+    "cancel": "취소",
+    "confirm": "확인",
+    "save": "저장",
+    "delete": "삭제",
+    "edit": "편집",
+    "create": "생성",
+    "close": "닫기",
+    "yes": "예",
+    "no": "아니오",
+    "add": "추가",
+    "remove": "제거",
+    "export": "내보내기"
+  },
+  "navigation": {
+    "mwfScheduler": "MWF 스케줄러",
+    "ttScheduler": "TT 스케줄러",
+    "unifiedScheduler": "통합 스케줄러 (MWF+TT)",
+    "slotManagement": "슬롯 관리",
+    "history": "히스토리",
+    "mySchedule": "내 스케줄",
+    "classReports": "클래스 리포트",
+    "allSlots": "전체 슬롯 관리",
+    "superAdmin": "Super Admin",
+    "sandbox": "Sandbox",
+    "shareAdmin": "공유 링크 관리",
+    "telemetry": "텔레메트리",
+    "devTools": "개발 도구"
+  },
+  "header": {
+    "title": "스케줄러",
+    "notLoggedIn": "로그인되지 않음"
+  },
+  "auth": {
+    "signIn": "로그인",
+    "signOut": "로그아웃",
+    "email": "이메일",
+    "password": "비밀번호",
+    "roles": {
+      "SUPER_ADMIN": "슈퍼 관리자",
+      "ADMIN": "관리자"
+    }
+  },
+  "slotManager": {
+    "title": "슬롯 관리",
+    "createNew": "새 슬롯 만들기",
+    "slotNamePlaceholder": "슬롯 이름을 입력하세요",
+    "create": "생성",
+    "cancel": "취소",
+    "activeSlot": "현재 활성 슬롯",
+    "teacherPool": "교사 풀",
+    "createdDate": "생성일",
+    "updatedDate": "수정일",
+    "active": "활성",
+    "noSlots": "슬롯이 없습니다.",
+    "teachers": "교사",
+    "updated": "수정"
+  },
+  "slot": {
+    "slots": "슬롯",
+    "newSlot": "새 슬롯",
+    "newSlotCreated": "새 슬롯이 생성되었습니다",
+    "editSlot": "슬롯을 편집합니다",
+    "deleted": "슬롯이 삭제되었습니다",
+    "created": "생성일",
+    "updated": "수정일",
+    "active": "활성 슬롯"
+  },
+  "teacher": {
+    "homeroomPool": "담임 교사 풀",
+    "koreanPool": "한국어 교사 풀",
+    "foreignPool": "외국어 교사 풀",
+    "addTeacher": "교사 추가",
+    "addTeacherPrompt": "교사를 추가하려면 아래 풀에서 직접 추가하세요",
+    "addPlaceholder": "교사 이름 입력",
+    "noTeachers": "교사가 없습니다",
+    "total": "총 교사 수",
+    "added": "교사가 추가되었습니다",
+    "removed": "교사가 제거되었습니다",
+    "role": {
+      "homeroom": "담임",
+      "korean": "한국어",
+      "foreign": "외국어"
+    }
+  },
+  "constraints": {
+    "title": "교사 제약조건",
+    "noConstraints": "제약조건이 없습니다",
+    "teacher": "교사",
+    "homeroomDisabled": "담임 불가",
+    "maxHomerooms": "최대 담임 수",
+    "unavailablePeriods": "수업 불가 교시"
+  },
+  "schedule": {
+    "title": "주간 스케줄러 대시보드",
+    "generate": "스케줄 생성",
+    "generating": "생성 중...",
+    "generatedSuccessfully": "스케줄이 성공적으로 생성되었습니다",
+    "generationFailed": "스케줄 생성에 실패했습니다",
+    "exported": "스케줄이 내보내졌습니다",
+    "result": "스케줄 결과",
+    "period": "교시",
+    "empty": "빈 슬롯",
+    "exam": "시험",
+    "homeroomAssignments": "담임 배정",
+    "koreanAssignments": "한국어 배정",
+    "foreignAssignments": "외국어 배정",
+    "totalSlots": "총 슬롯",
+    "addTeachersFirst": "먼저 교사를 추가해주세요",
+    "configureConstraints": "제약조건을 설정해주세요",
+    "periods": {
+      "1": "1교시",
+      "2": "2교시",
+      "3": "3교시",
+      "4": "4교시",
+      "5": "5교시",
+      "6": "6교시",
+      "7": "7교시",
+      "8": "8교시"
+    },
+    "days": {
+      "Mon": "월",
+      "Tue": "화",
+      "Wed": "수",
+      "Thu": "목",
+      "Fri": "금"
+    },
+    "dayGroups": {
+      "MWF": "월수금",
+      "TT": "화목"
+    },
+    "roles": {
+      "H": "담임",
+      "K": "한국어",
+      "F": "외국어",
+      "EXAM": "시험"
+    },
+    "rounds": {
+      "1": "R1",
+      "2": "R2",
+      "3": "R3",
+      "4": "R4"
+    },
+    "times": {
+      "MWF": {
+        "1": "09:00-09:50",
+        "2": "10:00-10:50",
+        "3": "11:00-11:50",
+        "4": "13:00-13:50",
+        "5": "14:00-14:50",
+        "6": "15:00-15:50",
+        "7": "16:00-16:50",
+        "8": "17:00-17:50"
+      },
+      "TT": {
+        "1": "09:00-09:50",
+        "2": "10:00-10:50",
+        "3": "11:00-11:50",
+        "4": "13:00-13:50",
+        "5": "14:00-14:50",
+        "6": "15:00-15:50"
+      }
+    }
+  },
+  "reports": {
+    "title": "클래스 스케줄 리포트",
+    "subtitle": "클래스별 주간 스케줄을 확인하고 인쇄하거나 내보낼 수 있습니다",
+    "slotSelect": "슬롯 선택",
+    "selectSlot": "슬롯 선택...",
+    "week": "주차",
+    "classCount": "클래스 수",
+    "printMode": "인쇄 모드",
+    "print": "인쇄",
+    "exportCSV": "CSV 내보내기",
+    "selectSlotFirst": "슬롯을 선택해주세요",
+    "noScheduleData": "스케줄 데이터 없음",
+    "noScheduleMessage": "선택한 슬롯에 대한 최신 스케줄이 없습니다.",
+    "totalClasses": "총 {count}개 클래스의 스케줄",
+    "legend": "범례"
+  },
+  "theme": {
+    "light": "라이트",
+    "dark": "다크",
+    "system": "시스템"
+  },
+  "density": {
+    "comfortable": "컴포트",
+    "compact": "컴팩트"
+  },
+  "language": {
+    "korean": "한국어",
+    "english": "English"
+  },
+  "timeFormat": {
+    "24h": "24시간",
+    "12h": "12시간"
+  }
+}

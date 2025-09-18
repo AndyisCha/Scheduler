@@ -1,0 +1,149 @@
+{
+  "common": {
+    "loading": "Loading...",
+    "error": "Error",
+    "success": "Success",
+    "cancel": "Cancel",
+    "confirm": "Confirm",
+    "save": "Save",
+    "delete": "Delete",
+    "edit": "Edit",
+    "create": "Create",
+    "close": "Close",
+    "yes": "Yes",
+    "no": "No"
+  },
+  "navigation": {
+    "mwfScheduler": "MWF Scheduler",
+    "ttScheduler": "TT Scheduler",
+    "unifiedScheduler": "Unified Scheduler (MWF+TT)",
+    "slotManagement": "Slot Management",
+    "history": "History",
+    "mySchedule": "My Schedule",
+    "classReports": "Class Reports",
+    "allSlots": "All Slots Management",
+    "superAdmin": "Super Admin",
+    "sandbox": "Sandbox",
+    "shareAdmin": "Share Links Admin",
+    "telemetry": "Telemetry",
+    "devTools": "Dev Tools"
+  },
+  "header": {
+    "title": "Scheduler",
+    "notLoggedIn": "Not logged in"
+  },
+  "auth": {
+    "signIn": "Sign In",
+    "signOut": "Sign Out",
+    "email": "Email",
+    "password": "Password",
+    "roles": {
+      "SUPER_ADMIN": "Super Admin",
+      "ADMIN": "Admin"
+    }
+  },
+  "slotManager": {
+    "title": "Slot Management",
+    "createNew": "Create New Slot",
+    "slotNamePlaceholder": "Enter slot name",
+    "create": "Create",
+    "cancel": "Cancel",
+    "activeSlot": "Current Active Slot",
+    "teacherPool": "Teacher Pool",
+    "createdDate": "Created",
+    "updatedDate": "Updated",
+    "active": "Active",
+    "noSlots": "No slots available.",
+    "teachers": "Teachers",
+    "updated": "Updated"
+  },
+  "schedule": {
+    "title": "Weekly Scheduler Dashboard",
+    "periods": {
+      "1": "Period 1",
+      "2": "Period 2",
+      "3": "Period 3",
+      "4": "Period 4",
+      "5": "Period 5",
+      "6": "Period 6",
+      "7": "Period 7",
+      "8": "Period 8"
+    },
+    "days": {
+      "Mon": "Mon",
+      "Tue": "Tue",
+      "Wed": "Wed",
+      "Thu": "Thu",
+      "Fri": "Fri"
+    },
+    "dayGroups": {
+      "MWF": "Mon/Wed/Fri",
+      "TT": "Tue/Thu"
+    },
+    "roles": {
+      "H": "Homeroom",
+      "K": "Korean",
+      "F": "Foreign",
+      "EXAM": "Exam"
+    },
+    "rounds": {
+      "1": "R1",
+      "2": "R2",
+      "3": "R3",
+      "4": "R4"
+    },
+    "times": {
+      "MWF": {
+        "1": "09:00-09:50",
+        "2": "10:00-10:50",
+        "3": "11:00-11:50",
+        "4": "13:00-13:50",
+        "5": "14:00-14:50",
+        "6": "15:00-15:50",
+        "7": "16:00-16:50",
+        "8": "17:00-17:50"
+      },
+      "TT": {
+        "1": "09:00-09:50",
+        "2": "10:00-10:50",
+        "3": "11:00-11:50",
+        "4": "13:00-13:50",
+        "5": "14:00-14:50",
+        "6": "15:00-15:50"
+      }
+    }
+  },
+  "reports": {
+    "title": "Class Schedule Reports",
+    "subtitle": "View, print, and export weekly class schedules",
+    "slotSelect": "Select Slot",
+    "selectSlot": "Select slot...",
+    "week": "Week",
+    "classCount": "Classes",
+    "printMode": "Print Mode",
+    "print": "Print",
+    "exportCSV": "Export CSV",
+    "selectSlotFirst": "Please select a slot",
+    "noScheduleData": "No Schedule Data",
+    "noScheduleMessage": "No recent schedule available for the selected slot.",
+    "totalClasses": "Schedule for {count} classes",
+    "legend": "Legend"
+  },
+  "theme": {
+    "light": "Light",
+    "dark": "Dark",
+    "system": "System"
+  },
+  "density": {
+    "comfortable": "Comfortable",
+    "compact": "Compact"
+  },
+  "language": {
+    "korean": "한국어",
+    "english": "English"
+  },
+  "timeFormat": {
+    "24h": "24 Hour",
+    "12h": "12 Hour"
+  }
+}
