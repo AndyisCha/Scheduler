@@ -514,7 +514,6 @@ export async function getGlobalOptions(slotId: string): Promise<DbGlobalOption[]
       .from('global_options')
       .select('*')
       .eq('slot_id', slotId)
-      .order('key')
     
     if (error) {
       throw toDbError(error)
@@ -527,7 +526,7 @@ export async function getGlobalOptions(slotId: string): Promise<DbGlobalOption[]
   }
 }
 
-export async function upsertGlobalOption(slotId: string, key: string, value: any): Promise<DbGlobalOption> {
+export async function upsertGlobalOption(slotId: string, options: Partial<Pick<DbGlobalOption, 'include_h_in_k' | 'prefer_other_h_for_k' | 'disallow_own_h_as_k' | 'round_class_counts'>>): Promise<DbGlobalOption> {
   try {
     const supabase = getSupabaseClient()
     
@@ -535,8 +534,7 @@ export async function upsertGlobalOption(slotId: string, key: string, value: any
       .from('global_options')
       .upsert({
         slot_id: slotId,
-        key,
-        value
+        ...options
       })
       .select()
       .single()

@@ -57,17 +57,13 @@ export function GlobalOptionsTab({ slotId, slotConfig, onUpdate }: GlobalOptions
     setIsSaving(true)
     
     try {
-      const optionUpdates = [
-        { key: 'include_h_in_k', value: includeHInK },
-        { key: 'prefer_other_h_for_k', value: preferOtherHForK },
-        { key: 'disallow_own_h_as_k', value: disallowOwnHAsK },
-        { key: 'round_class_counts', value: roundClassCounts }
-      ]
-      
-      // Update all options
-      await Promise.all(
-        optionUpdates.map(({ key, value }) => upsertGlobalOption(slotId, key, value))
-      )
+      // Update all options in a single call
+      await upsertGlobalOption(slotId, {
+        include_h_in_k: includeHInK,
+        prefer_other_h_for_k: preferOtherHForK,
+        disallow_own_h_as_k: disallowOwnHAsK,
+        round_class_counts: roundClassCounts
+      })
       
       // Update slot config
       onUpdate({

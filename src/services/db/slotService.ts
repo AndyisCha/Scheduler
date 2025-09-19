@@ -99,6 +99,13 @@ export class SlotService {
       const firstError = errors.find(error => error)
       
       if (firstError) {
+        console.error('getSlotConfig database errors:', {
+          slotError,
+          teachersError,
+          constraintsError,
+          homeroomsError,
+          optionsError
+        })
         throw firstError
       }
       
@@ -236,6 +243,7 @@ export class SlotService {
         })
       
       if (optionsError) {
+        console.error('Error creating default global options:', optionsError)
         throw optionsError
       }
       
