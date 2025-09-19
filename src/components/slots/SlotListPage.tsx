@@ -181,7 +181,7 @@ export function SlotListPage({ onSlotSelect, selectedSlotId }: SlotListPageProps
           <div className="p-4 border-b border-gray-200">
             <h3 className="text-lg font-semibold text-gray-900">슬롯 목록 ({filteredSlots.length}개)</h3>
           </div>
-          <div className="max-h-[600px] overflow-y-auto">
+          <div className="max-h-screen overflow-y-auto" style={{maxHeight: '800px'}}>
             <div className="divide-y divide-gray-200">
               {filteredSlots.map(slot => (
                 <div
