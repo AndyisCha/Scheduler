@@ -178,6 +178,35 @@ export function ConstraintsTab({ slotId, slotConfig, onUpdate }: ConstraintsTabP
     })
   }
 
+  const toggleAllPeriodsForDay = (constraint: DbTeacherConstraint, day: string) => {
+    const dayPeriods = PERIODS.map(period => `${day}|${period}`)
+    const unavailableForDay = dayPeriods.filter(period => constraint.unavailable.includes(period))
+    
+    // If all periods are unavailable, make them all available
+    // Otherwise, make them all unavailable
+    const allUnavailable = unavailableForDay.length === PERIODS.length
+    
+    let newUnavailable
+    if (allUnavailable) {
+      // Remove all periods for this day
+      newUnavailable = constraint.unavailable.filter(u => !dayPeriods.includes(u))
+    } else {
+      // Add all periods for this day
+      newUnavailable = [...constraint.unavailable, ...dayPeriods.filter(u => !constraint.unavailable.includes(u))]
+    }
+    
+    console.log('Toggling all periods for day:', {
+      teacher: constraint.teacher_name,
+      day,
+      allUnavailable,
+      newUnavailable
+    }) // Debug log
+    
+    handleUpdateConstraint(constraint.id, constraint.teacher_name, {
+      unavailable: newUnavailable
+    })
+  }
+
   if (isLoading) {
     return <LoadingState message="제약 조건을 불러오는 중..." />
   }
@@ -282,38 +311,71 @@ export function ConstraintsTab({ slotId, slotConfig, onUpdate }: ConstraintsTabP
                   <h5 className="text-sm font-medium text-gray-900 mb-3">사용 불가 시간 설정</h5>
                   <div className="bg-white rounded-lg p-4">
                     <div className="grid grid-cols-5 gap-3">
-                      {DAYS.map(day => (
-                        <div key={day} className="text-center">
-                          <div className="text-sm font-medium text-gray-700 mb-2">{day}요일</div>
-                          <div className="space-y-1">
+                      {DAYS.map(day => {
+                        const dayPeriods = PERIODS.map(period => `${day}|${period}`)
+                        const unavailableForDay = dayPeriods.filter(period => constraint.unavailable.includes(period))
+                        const allUnavailable = unavailableForDay.length === PERIODS.length
+                        
+                        return (
+                          <div key={day} className="text-center">
+                            <div className="flex items-center justify-center mb-2">
+                              <button
+                                onClick={() => toggleAllPeriodsForDay(constraint, day)}
+                                className={`text-xs px-2 py-1 rounded transition-colors ${
+                                  allUnavailable
+                                    ? 'bg-red-100 text-red-700 hover:bg-red-200'
+                                    : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                                }`}
+                                title={`${day}요일 전체 ${allUnavailable ? '해제' : '선택'}`}
+                              >
+                                {allUnavailable ? '전체 해제' : '전체 선택'}
+                              </button>
+                            </div>
+                            <div className="space-y-1">
                             {PERIODS.map(period => {
                               const isUnavailable = constraint.unavailable.includes(`${day}|${period}`)
                               return (
                                 <button
                                   key={`${day}-${period}`}
                                   onClick={() => toggleUnavailable(constraint, day, period)}
-                                  className={`w-full h-10 text-sm rounded-md transition-colors ${
+                                  className={`w-full h-10 text-sm rounded-md transition-all duration-200 border-2 ${
                                     isUnavailable
-                                      ? 'bg-red-500 text-white hover:bg-red-600 shadow-sm'
-                                      : 'bg-white text-gray-700 hover:bg-gray-100 border border-gray-200'
+                                      ? 'bg-red-500 text-white hover:bg-red-600 border-red-600 shadow-lg'
+                                      : 'bg-white text-gray-700 hover:bg-gray-50 border-gray-200 hover:border-gray-300'
                                   }`}
-                                  title={`${day}요일 ${period}교시`}
+                                  title={`${day}요일 ${period}교시 - ${isUnavailable ? '사용 불가' : '사용 가능'}`}
                                 >
-                                  {period}교시
+                                  <div className="flex items-center justify-center">
+                                    {isUnavailable ? (
+                                      <>
+                                        <span className="text-lg font-bold">✕</span>
+                                        <span className="ml-1 text-xs">불가</span>
+                                      </>
+                                    ) : (
+                                      <>
+                                        <span className="text-sm">{period}교시</span>
+                                      </>
+                                    )}
+                                  </div>
                                 </button>
                               )
                             })}
+                            </div>
                           </div>
-                        </div>
-                      ))}
+                        )
+                      })}
                     </div>
-                    <div className="flex items-center justify-center mt-4 space-x-6 text-xs text-gray-600">
+                    <div className="flex items-center justify-center mt-4 space-x-8 text-xs text-gray-600">
                       <div className="flex items-center">
-                        <div className="w-4 h-4 bg-white border border-gray-200 rounded mr-2"></div>
+                        <div className="w-8 h-6 bg-white border-2 border-gray-200 rounded mr-2 flex items-center justify-center">
+                          <span className="text-xs">1</span>
+                        </div>
                         <span>사용 가능</span>
                       </div>
                       <div className="flex items-center">
-                        <div className="w-4 h-4 bg-red-500 rounded mr-2"></div>
+                        <div className="w-8 h-6 bg-red-500 border-2 border-red-600 rounded mr-2 flex items-center justify-center">
+                          <span className="text-white text-xs font-bold">✕</span>
+                        </div>
                         <span>사용 불가</span>
                       </div>
                     </div>
