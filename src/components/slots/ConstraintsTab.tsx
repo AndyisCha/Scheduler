@@ -93,12 +93,22 @@ export function ConstraintsTab({ slotId, slotConfig, onUpdate }: ConstraintsTabP
     unavailable?: string[]
   }) => {
     try {
-      const updatedConstraint = await upsertTeacherConstraint(slotId, teacherName, {
-        homeroom_disabled: updates.homeroom_disabled ?? false,
-        max_homerooms: updates.max_homerooms ?? 0,
-        unavailable: updates.unavailable ?? []
-      })
+      // Get current constraint to merge updates
+      const currentConstraint = constraints.find(c => c.id === constraintId)
+      if (!currentConstraint) {
+        toast.error('제약 조건을 찾을 수 없습니다.')
+        return
+      }
+
+      const mergedUpdates = {
+        homeroom_disabled: updates.homeroom_disabled ?? currentConstraint.homeroom_disabled,
+        max_homerooms: updates.max_homerooms ?? currentConstraint.max_homerooms,
+        unavailable: updates.unavailable ?? currentConstraint.unavailable
+      }
+
+      const updatedConstraint = await upsertTeacherConstraint(slotId, teacherName, mergedUpdates)
       
+      // Update local state immediately
       setConstraints(prev => prev.map(c => c.id === constraintId ? updatedConstraint : c))
       
       // Update slot config
@@ -115,8 +125,10 @@ export function ConstraintsTab({ slotId, slotConfig, onUpdate }: ConstraintsTabP
         }
       })
       
+      console.log('Constraint updated:', updatedConstraint) // Debug log
       toast.success('제약 조건이 업데이트되었습니다.')
     } catch (err) {
+      console.error('Error updating constraint:', err) // Debug log
       const errorMessage = err instanceof Error ? err.message : '제약 조건 업데이트 중 오류가 발생했습니다.'
       toast.error(errorMessage)
     }
@@ -148,9 +160,18 @@ export function ConstraintsTab({ slotId, slotConfig, onUpdate }: ConstraintsTabP
 
   const toggleUnavailable = (constraint: DbTeacherConstraint, day: string, period: number) => {
     const unavailableStr = `${day}|${period}`
-    const newUnavailable = constraint.unavailable.includes(unavailableStr)
+    const isCurrentlyUnavailable = constraint.unavailable.includes(unavailableStr)
+    const newUnavailable = isCurrentlyUnavailable
       ? constraint.unavailable.filter(u => u !== unavailableStr)
       : [...constraint.unavailable, unavailableStr]
+    
+    console.log('Toggling unavailable time:', {
+      teacher: constraint.teacher_name,
+      day,
+      period,
+      wasUnavailable: isCurrentlyUnavailable,
+      newUnavailable
+    }) // Debug log
     
     handleUpdateConstraint(constraint.id, constraint.teacher_name, {
       unavailable: newUnavailable
@@ -221,9 +242,12 @@ export function ConstraintsTab({ slotId, slotConfig, onUpdate }: ConstraintsTabP
                         type="checkbox"
                         id={`homeroom-disabled-${constraint.id}`}
                         checked={constraint.homeroom_disabled}
-                        onChange={(e) => handleUpdateConstraint(constraint.id, constraint.teacher_name, {
-                          homeroom_disabled: e.target.checked
-                        })}
+                        onChange={(e) => {
+                          console.log('Homeroom disabled changed to:', e.target.checked) // Debug log
+                          handleUpdateConstraint(constraint.id, constraint.teacher_name, {
+                            homeroom_disabled: e.target.checked
+                          })
+                        }}
                         className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
                       />
                       <label htmlFor={`homeroom-disabled-${constraint.id}`} className="ml-2 text-sm text-gray-700">
@@ -240,9 +264,13 @@ export function ConstraintsTab({ slotId, slotConfig, onUpdate }: ConstraintsTabP
                         min="0"
                         max="20"
                         value={constraint.max_homerooms}
-                        onChange={(e) => handleUpdateConstraint(constraint.id, constraint.teacher_name, {
-                          max_homerooms: parseInt(e.target.value) || 0
-                        })}
+                        onChange={(e) => {
+                          const value = parseInt(e.target.value) || 0
+                          console.log('Max homerooms changed to:', value) // Debug log
+                          handleUpdateConstraint(constraint.id, constraint.teacher_name, {
+                            max_homerooms: value
+                          })
+                        }}
                         className="w-24 px-3 py-1 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm"
                       />
                     </div>
