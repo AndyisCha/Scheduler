@@ -42,12 +42,10 @@ export interface DbFixedHomeroom {
 export interface DbGlobalOption {
   id: string
   slot_id: string
-  key: string
-  value: any // JSON value
-  include_h_in_k?: boolean
-  prefer_other_h_for_k?: boolean
-  disallow_own_h_as_k?: boolean
-  round_class_counts?: any
+  include_h_in_k: boolean
+  prefer_other_h_for_k: boolean
+  disallow_own_h_as_k: boolean
+  round_class_counts: Record<string, number>
   created_at: string
   updated_at: string
 }

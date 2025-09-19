@@ -39,15 +39,12 @@ export function GlobalOptionsTab({ slotId, slotConfig, onUpdate }: GlobalOptions
       const optionsData = await getGlobalOptions(slotId)
       
       // Set local state from loaded options
-      const optionMap = optionsData.reduce((acc, opt) => {
-        acc[opt.key] = opt.value
-        return acc
-      }, {} as Record<string, any>)
+      const option = optionsData.length > 0 ? optionsData[0] : null
       
-      setIncludeHInK(optionMap.include_h_in_k ?? true)
-      setPreferOtherHForK(optionMap.prefer_other_h_for_k ?? true)
-      setDisallowOwnHAsK(optionMap.disallow_own_h_as_k ?? true)
-      setRoundClassCounts(optionMap.round_class_counts ?? { R1: 2, R2: 2, R3: 2, R4: 2 })
+      setIncludeHInK(option?.include_h_in_k ?? true)
+      setPreferOtherHForK(option?.prefer_other_h_for_k ?? true)
+      setDisallowOwnHAsK(option?.disallow_own_h_as_k ?? true)
+      setRoundClassCounts((option?.round_class_counts as { R1: number; R2: number; R3: number; R4: number }) ?? { R1: 2, R2: 2, R3: 2, R4: 2 })
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : '전역 옵션을 불러오는 중 오류가 발생했습니다.'
       toast.error(errorMessage)

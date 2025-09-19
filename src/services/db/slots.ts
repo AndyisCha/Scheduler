@@ -97,9 +97,9 @@ export async function getSlotConfig(slotId: string): Promise<SlotConfig> {
       
       // Get global options
       supabase
-        .from('global_options')
-        .select('key, value')
-        .eq('slot_id', slotId)
+      .from('global_options')
+      .select('include_h_in_k, prefer_other_h_for_k, disallow_own_h_as_k, round_class_counts')
+      .eq('slot_id', slotId)
     ])
     
     // Check for errors
@@ -139,10 +139,18 @@ export async function getSlotConfig(slotId: string): Promise<SlotConfig> {
       return acc
     }, {} as Record<string, string>)
     
-    const globalOptionsMap = globalOptions.reduce((acc, g) => {
-      acc[g.key] = g.value
-      return acc
-    }, {} as Record<string, any>)
+    // Convert global options to the expected format
+    const globalOptionsMap = globalOptions.length > 0 ? {
+      includeHInK: globalOptions[0].include_h_in_k,
+      preferOtherHForK: globalOptions[0].prefer_other_h_for_k,
+      disallowOwnHAsK: globalOptions[0].disallow_own_h_as_k,
+      roundClassCounts: globalOptions[0].round_class_counts || { '1': 3, '2': 3, '3': 3, '4': 3 }
+    } : {
+      includeHInK: true,
+      preferOtherHForK: false,
+      disallowOwnHAsK: true,
+      roundClassCounts: { '1': 3, '2': 3, '3': 3, '4': 3 }
+    }
     
     return {
       id: slot.id,
@@ -156,10 +164,10 @@ export async function getSlotConfig(slotId: string): Promise<SlotConfig> {
       teacherConstraints,
       fixedHomerooms: fixedHomeroomsMap,
       globalOptions: {
-        includeHInK: globalOptionsMap.include_h_in_k ?? true,
-        preferOtherHForK: globalOptionsMap.prefer_other_h_for_k ?? true,
-        disallowOwnHAsK: globalOptionsMap.disallow_own_h_as_k ?? true,
-        roundClassCounts: globalOptionsMap.round_class_counts ?? { 1: 2, 2: 2, 3: 2, 4: 2 }
+        includeHInK: globalOptionsMap.includeHInK ?? true,
+        preferOtherHForK: globalOptionsMap.preferOtherHForK ?? true,
+        disallowOwnHAsK: globalOptionsMap.disallowOwnHAsK ?? true,
+        roundClassCounts: globalOptionsMap.roundClassCounts ?? { 1: 2, 2: 2, 3: 2, 4: 2 }
       }
     }
   } catch (error) {
