@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import { getTeacherConstraints, upsertTeacherConstraint, deleteTeacherConstraint } from '../../services/db/slots'
 import { useToast } from '../Toast'
 import { LoadingState } from '../ErrorStates'
@@ -211,81 +211,84 @@ export function ConstraintsTab({ slotId, slotConfig, onUpdate }: ConstraintsTabP
                 </button>
               </div>
               
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className="space-y-6">
                 {/* Homeroom Settings */}
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    홈룸 설정
-                  </label>
-                  <div className="space-y-2">
-                    <label className="flex items-center">
+                <div className="bg-gray-50 rounded-lg p-4">
+                  <h5 className="text-sm font-medium text-gray-900 mb-3">홈룸 설정</h5>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="flex items-center">
                       <input
                         type="checkbox"
+                        id={`homeroom-disabled-${constraint.id}`}
                         checked={constraint.homeroom_disabled}
                         onChange={(e) => handleUpdateConstraint(constraint.id, constraint.teacher_name, {
                           homeroom_disabled: e.target.checked
                         })}
-                        className="rounded border-gray-300 text-blue-600 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
+                        className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
                       />
-                      <span className="ml-2 text-sm text-gray-700">홈룸 비활성화</span>
-                    </label>
-                    <div className="flex items-center space-x-2">
-                      <label htmlFor={`max-homerooms-${constraint.id}`} className="text-sm text-gray-700">
-                        최대 홈룸:
+                      <label htmlFor={`homeroom-disabled-${constraint.id}`} className="ml-2 text-sm text-gray-700">
+                        홈룸 담당 비활성화
+                      </label>
+                    </div>
+                    <div className="flex items-center space-x-3">
+                      <label htmlFor={`max-homerooms-${constraint.id}`} className="text-sm font-medium text-gray-700">
+                        최대 홈룸 수:
                       </label>
                       <input
                         type="number"
                         id={`max-homerooms-${constraint.id}`}
                         min="0"
-                        max="10"
+                        max="20"
                         value={constraint.max_homerooms}
                         onChange={(e) => handleUpdateConstraint(constraint.id, constraint.teacher_name, {
                           max_homerooms: parseInt(e.target.value) || 0
                         })}
-                        className="w-20 border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                        className="w-24 px-3 py-1 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm"
                       />
                     </div>
                   </div>
                 </div>
 
                 {/* Unavailable Times */}
-                <div className="md:col-span-2">
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    불가능한 시간 (클릭하여 토글)
-                  </label>
-                  <div className="grid grid-cols-6 gap-1">
-                    {/* Header */}
-                    <div></div>
-                    {PERIODS.map(period => (
-                      <div key={period} className="text-xs text-center font-medium text-gray-600">
-                        {period}교시
-                      </div>
-                    ))}
-                    
-                    {/* Day rows */}
-                    {DAYS.map(day => (
-                      <React.Fragment key={day}>
-                        <div className="text-xs font-medium text-gray-600 flex items-center justify-center">
-                          {day}
+                <div className="bg-gray-50 rounded-lg p-4">
+                  <h5 className="text-sm font-medium text-gray-900 mb-3">사용 불가 시간 설정</h5>
+                  <div className="bg-white rounded-lg p-4">
+                    <div className="grid grid-cols-5 gap-3">
+                      {DAYS.map(day => (
+                        <div key={day} className="text-center">
+                          <div className="text-sm font-medium text-gray-700 mb-2">{day}요일</div>
+                          <div className="space-y-1">
+                            {PERIODS.map(period => {
+                              const isUnavailable = constraint.unavailable.includes(`${day}|${period}`)
+                              return (
+                                <button
+                                  key={`${day}-${period}`}
+                                  onClick={() => toggleUnavailable(constraint, day, period)}
+                                  className={`w-full h-10 text-sm rounded-md transition-colors ${
+                                    isUnavailable
+                                      ? 'bg-red-500 text-white hover:bg-red-600 shadow-sm'
+                                      : 'bg-white text-gray-700 hover:bg-gray-100 border border-gray-200'
+                                  }`}
+                                  title={`${day}요일 ${period}교시`}
+                                >
+                                  {period}교시
+                                </button>
+                              )
+                            })}
+                          </div>
                         </div>
-                        {PERIODS.map(period => {
-                          const isUnavailable = constraint.unavailable.includes(`${day}|${period}`)
-                          return (
-                            <button
-                              key={`${day}-${period}`}
-                              onClick={() => toggleUnavailable(constraint, day, period)}
-                              className={`w-8 h-8 text-xs rounded border ${
-                                isUnavailable
-                                  ? 'bg-red-100 border-red-300 text-red-700'
-                                  : 'bg-green-100 border-green-300 text-green-700'
-                              } hover:opacity-75`}
-                            >
-                              {isUnavailable ? '✗' : '✓'}
-                            </button>
-                          )
-                        })}
-                      </React.Fragment>
-                    ))}
+                      ))}
+                    </div>
+                    <div className="flex items-center justify-center mt-4 space-x-6 text-xs text-gray-600">
+                      <div className="flex items-center">
+                        <div className="w-4 h-4 bg-white border border-gray-200 rounded mr-2"></div>
+                        <span>사용 가능</span>
+                      </div>
+                      <div className="flex items-center">
+                        <div className="w-4 h-4 bg-red-500 rounded mr-2"></div>
+                        <span>사용 불가</span>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
