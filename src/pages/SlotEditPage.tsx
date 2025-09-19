@@ -73,7 +73,7 @@ export function SlotEditPage() {
   }
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 min-h-screen">
       {/* Header */}
       <div className="mb-8">
         <div className="flex items-center justify-between">
@@ -134,19 +134,21 @@ export function SlotEditPage() {
       </div>
 
       {/* Tab Content */}
-      <div className="bg-white shadow rounded-lg">
-        {activeTab === 'teachers' && (
-          <TeachersTab slotId={id!} slotConfig={slotConfig} onUpdate={setSlotConfig} />
-        )}
-        {activeTab === 'constraints' && (
-          <ConstraintsTab slotId={id!} slotConfig={slotConfig} onUpdate={setSlotConfig} />
-        )}
-        {activeTab === 'homerooms' && (
-          <FixedHomeroomsTab slotId={id!} slotConfig={slotConfig} onUpdate={setSlotConfig} />
-        )}
-        {activeTab === 'options' && (
-          <GlobalOptionsTab slotId={id!} slotConfig={slotConfig} onUpdate={setSlotConfig} />
-        )}
+      <div className="bg-white shadow rounded-lg min-h-[800px] overflow-y-auto">
+        <div className="p-6">
+          {activeTab === 'teachers' && (
+            <TeachersTab slotId={id!} slotConfig={slotConfig} onUpdate={setSlotConfig} />
+          )}
+          {activeTab === 'constraints' && (
+            <ConstraintsTab slotId={id!} slotConfig={slotConfig} onUpdate={setSlotConfig} />
+          )}
+          {activeTab === 'homerooms' && (
+            <FixedHomeroomsTab slotId={id!} slotConfig={slotConfig} onUpdate={setSlotConfig} />
+          )}
+          {activeTab === 'options' && (
+            <GlobalOptionsTab slotId={id!} slotConfig={slotConfig} onUpdate={setSlotConfig} />
+          )}
+        </div>
       </div>
     </div>
   )
