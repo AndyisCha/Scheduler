@@ -177,54 +177,90 @@ export function SlotListPage({ onSlotSelect, selectedSlotId }: SlotListPageProps
           message="슬롯이 없습니다"
         />
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {filteredSlots.map(slot => (
-            <div
-              key={slot.id}
-              className={`bg-white rounded-lg shadow-md p-4 border-2 transition-colors ${
-                selectedSlotId === slot.id 
-                  ? 'border-blue-500 bg-blue-50' 
-                  : 'border-gray-200 hover:border-gray-300'
-              }`}
-            >
-              <div className="flex justify-between items-start mb-3">
-                <div>
-                  <h3 className="font-semibold text-gray-900">{slot.name}</h3>
-                  <span className={`inline-block px-2 py-1 text-xs rounded ${
-                    slot.dayGroup === 'MWF' 
-                      ? 'bg-green-100 text-green-800' 
-                      : 'bg-purple-100 text-purple-800'
-                  }`}>
-                    {slot.dayGroup}
-                  </span>
+        <div className="bg-white rounded-lg shadow-sm border border-gray-200">
+          <div className="p-4 border-b border-gray-200">
+            <h3 className="text-lg font-semibold text-gray-900">슬롯 목록 ({filteredSlots.length}개)</h3>
+          </div>
+          <div className="max-h-96 overflow-y-auto">
+            <div className="divide-y divide-gray-200">
+              {filteredSlots.map(slot => (
+                <div
+                  key={slot.id}
+                  className={`p-4 transition-colors cursor-pointer ${
+                    selectedSlotId === slot.id 
+                      ? 'bg-blue-50 border-l-4 border-blue-500' 
+                      : 'hover:bg-gray-50'
+                  }`}
+                  onClick={() => onSlotSelect?.(slot)}
+                >
+                  <div className="flex justify-between items-start">
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center space-x-3 mb-2">
+                        <h3 className="text-base font-semibold text-gray-900 truncate">
+                          {slot.name}
+                        </h3>
+                        <span className={`inline-block px-2 py-1 text-xs font-medium rounded-full ${
+                          slot.dayGroup === 'MWF' 
+                            ? 'bg-green-100 text-green-800' 
+                            : 'bg-purple-100 text-purple-800'
+                        }`}>
+                          {slot.dayGroup}
+                        </span>
+                      </div>
+                      
+                      {slot.description && (
+                        <p className="text-sm text-gray-600 mb-3 line-clamp-2 break-words">
+                          {slot.description}
+                        </p>
+                      )}
+                      
+                      <div className="flex flex-wrap gap-4 text-xs text-gray-500">
+                        <span className="flex items-center">
+                          <svg className="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                          </svg>
+                          한국어: {slot.teachers.homeroomKoreanPool.length}명
+                        </span>
+                        <span className="flex items-center">
+                          <svg className="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                          </svg>
+                          외국어: {slot.teachers.foreignPool.length}명
+                        </span>
+                        <span className="flex items-center">
+                          <svg className="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                            <path fillRule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clipRule="evenodd"/>
+                          </svg>
+                          {new Date(slot.createdAt).toLocaleDateString('ko-KR')}
+                        </span>
+                      </div>
+                    </div>
+                    
+                    <div className="flex space-x-2 ml-4">
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          onSlotSelect?.(slot);
+                        }}
+                        className="px-3 py-1 text-xs bg-blue-100 text-blue-700 rounded-md hover:bg-blue-200 transition-colors"
+                      >
+                        편집
+                      </button>
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setDeleteSlotId(slot.id);
+                        }}
+                        className="px-3 py-1 text-xs bg-red-100 text-red-700 rounded-md hover:bg-red-200 transition-colors"
+                      >
+                        삭제
+                      </button>
+                    </div>
+                  </div>
                 </div>
-                <div className="flex space-x-1">
-                  <button
-                    onClick={() => onSlotSelect?.(slot)}
-                    className="text-blue-600 hover:text-blue-800 text-sm"
-                  >
-                    편집
-                  </button>
-                  <button
-                    onClick={() => setDeleteSlotId(slot.id)}
-                    className="text-red-600 hover:text-red-800 text-sm"
-                  >
-                    삭제
-                  </button>
-                </div>
-              </div>
-              
-              {slot.description && (
-                <p className="text-sm text-gray-600 mb-3">{slot.description}</p>
-              )}
-              
-              <div className="text-xs text-gray-500">
-                <p>한국어 교사: {slot.teachers.homeroomKoreanPool.length}명</p>
-                <p>외국어 교사: {slot.teachers.foreignPool.length}명</p>
-                <p>생성일: {new Date(slot.createdAt).toLocaleDateString()}</p>
-              </div>
+              ))}
             </div>
-          ))}
+          </div>
         </div>
       )}
 

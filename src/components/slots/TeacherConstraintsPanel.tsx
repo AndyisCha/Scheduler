@@ -57,17 +57,6 @@ export function TeacherConstraintsPanel({ constraints, teachers, onUpdate, onSav
     updateTeacherConstraint(teacherName, 'unavailablePeriods', newUnavailable)
   }
 
-  // Generate time slots for the day group
-  const generateTimeSlots = () => {
-    const days = ['월', '화', '수', '목', '금']
-    const periods = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
-    
-    return days.map(day => 
-      periods.map(period => `${day}|${period}`)
-    ).flat()
-  }
-
-  const timeSlots = generateTimeSlots()
 
   return (
     <div className="space-y-6">
@@ -114,69 +103,105 @@ export function TeacherConstraintsPanel({ constraints, teachers, onUpdate, onSav
                   {/* Homeroom Settings (only for homeroomKorean teachers) */}
                   {teacher.kind === 'homeroomKorean' && (
                     <div className="space-y-3">
-                      <div className="flex items-center">
-                        <input
-                          type="checkbox"
-                          id={`homeroom-disabled-${teacher.name}`}
-                          checked={teacherConstraints.homeroomDisabled}
-                          onChange={(e) => updateTeacherConstraint(teacher.name, 'homeroomDisabled', e.target.checked)}
-                          className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
-                        />
-                        <label htmlFor={`homeroom-disabled-${teacher.name}`} className="ml-2 text-sm text-gray-700">
-                          홈룸 담당 비활성화
-                        </label>
+                      <div className="bg-white border border-gray-200 rounded-lg p-4">
+                        <div className="flex items-center">
+                          <input
+                            type="checkbox"
+                            id={`homeroom-disabled-${teacher.name}`}
+                            checked={teacherConstraints.homeroomDisabled}
+                            onChange={(e) => updateTeacherConstraint(teacher.name, 'homeroomDisabled', e.target.checked)}
+                            className="h-5 w-5 text-blue-600 focus:ring-blue-500 border-gray-300 rounded transition-colors"
+                          />
+                          <label htmlFor={`homeroom-disabled-${teacher.name}`} className="ml-3 text-sm font-medium text-gray-700">
+                            홈룸 담당 비활성화
+                          </label>
+                        </div>
+                        <p className="text-xs text-gray-500 mt-2 ml-8">
+                          체크하면 이 교사는 홈룸을 담당하지 않습니다.
+                        </p>
                       </div>
 
-                      <div>
-                        <label htmlFor={`max-homerooms-${teacher.name}`} className="block text-sm font-medium text-gray-700 mb-1">
-                          최대 홈룸 수
+                      <div className="bg-white border border-gray-200 rounded-lg p-4">
+                        <label htmlFor={`max-homerooms-${teacher.name}`} className="block text-sm font-medium text-gray-700 mb-2">
+                          최대 홈룸 담당 수
                         </label>
-                        <input
-                          type="number"
-                          id={`max-homerooms-${teacher.name}`}
-                          min="0"
-                          max="10"
-                          value={teacherConstraints.maxHomerooms || ''}
-                          onChange={(e) => updateTeacherConstraint(
-                            teacher.name, 
-                            'maxHomerooms', 
-                            e.target.value ? parseInt(e.target.value) : undefined
-                          )}
-                          className="w-20 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                          placeholder="제한 없음"
-                        />
+                        <div className="flex items-center space-x-3">
+                          <input
+                            type="number"
+                            id={`max-homerooms-${teacher.name}`}
+                            min="0"
+                            max="20"
+                            value={teacherConstraints.maxHomerooms || ''}
+                            onChange={(e) => updateTeacherConstraint(
+                              teacher.name, 
+                              'maxHomerooms', 
+                              e.target.value ? parseInt(e.target.value) : undefined
+                            )}
+                            className="flex-1 px-3 py-2 text-sm border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+                            placeholder="제한 없음"
+                          />
+                          <button
+                            onClick={() => updateTeacherConstraint(teacher.name, 'maxHomerooms', undefined)}
+                            className="px-3 py-2 text-xs bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200 transition-colors"
+                          >
+                            제한 없음
+                          </button>
+                        </div>
+                        <p className="text-xs text-gray-500 mt-2">
+                          이 교사가 담당할 수 있는 최대 홈룸 수를 설정합니다. 비워두면 제한이 없습니다.
+                        </p>
                       </div>
                     </div>
                   )}
 
                   {/* Unavailable Time Slots */}
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      사용 불가 시간
+                    <label className="block text-sm font-medium text-gray-700 mb-3">
+                      사용 불가 시간 설정
                     </label>
-                    <div className="grid grid-cols-10 gap-1 max-h-40 overflow-y-auto border border-gray-200 rounded p-2">
-                      {timeSlots.map(timeSlot => {
-                        const periodNumber = parseInt(timeSlot.split('|')[1])
-                        const isUnavailable = teacherConstraints.unavailablePeriods.includes(periodNumber)
-                        return (
-                          <button
-                            key={timeSlot}
-                            onClick={() => toggleUnavailable(teacher.name, timeSlot)}
-                            className={`text-xs p-1 rounded ${
-                              isUnavailable
-                                ? 'bg-red-100 text-red-800 hover:bg-red-200'
-                                : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                            }`}
-                            title={timeSlot}
-                          >
-                            {timeSlot}
-                          </button>
-                        )
-                      })}
+                    <div className="bg-gray-50 rounded-lg p-4">
+                      <div className="grid grid-cols-5 gap-2 mb-4">
+                        {['월', '화', '수', '목', '금'].map(day => (
+                          <div key={day} className="text-center">
+                            <div className="text-sm font-medium text-gray-700 mb-2">{day}</div>
+                            <div className="space-y-1">
+                              {[1, 2, 3, 4, 5, 6, 7, 8].map(period => {
+                                const timeSlot = `${day}|${period}`;
+                                const periodNumber = parseInt(timeSlot.split('|')[1]);
+                                const isUnavailable = teacherConstraints.unavailablePeriods.includes(periodNumber);
+                                return (
+                                  <button
+                                    key={timeSlot}
+                                    onClick={() => toggleUnavailable(teacher.name, timeSlot)}
+                                    className={`w-full h-8 text-xs rounded-md transition-colors ${
+                                      isUnavailable
+                                        ? 'bg-red-500 text-white hover:bg-red-600 shadow-sm'
+                                        : 'bg-white text-gray-700 hover:bg-gray-100 border border-gray-200'
+                                    }`}
+                                    title={`${day}요일 ${period}교시`}
+                                  >
+                                    {period}
+                                  </button>
+                                );
+                              })}
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                      <div className="flex items-center justify-between text-xs text-gray-600">
+                        <div className="flex items-center space-x-4">
+                          <div className="flex items-center">
+                            <div className="w-3 h-3 bg-white border border-gray-200 rounded mr-1"></div>
+                            <span>사용 가능</span>
+                          </div>
+                          <div className="flex items-center">
+                            <div className="w-3 h-3 bg-red-500 rounded mr-1"></div>
+                            <span>사용 불가</span>
+                          </div>
+                        </div>
+                        <span>클릭하여 토글</span>
+                      </div>
                     </div>
-                    <p className="text-xs text-gray-500 mt-1">
-                      클릭하여 사용 불가 시간을 설정/해제하세요
-                    </p>
                   </div>
 
                   {/* Summary */}
