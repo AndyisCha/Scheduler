@@ -83,7 +83,7 @@ export function SlotEditPage() {
                 <nav className="flex items-center space-x-2 mb-4" aria-label="Breadcrumb">
                   <Link 
                     to="/slots" 
-                    className="inline-flex items-center text-sm font-medium text-gray-400 hover:text-gray-200 transition-colors"
+                    className="inline-flex items-center text-sm font-medium text-gray-400 hover:text-gray-200 transition-colors whitespace-nowrap"
                   >
                     <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
@@ -91,7 +91,7 @@ export function SlotEditPage() {
                     <span>1. 슬롯 목록</span>
                   </Link>
                   <span className="text-gray-500">/</span>
-                  <span className="text-sm font-medium text-white">2.</span>
+                  <span className="text-sm font-medium text-white whitespace-nowrap">2. 편집</span>
                 </nav>
                 
                 <div className="flex items-start justify-between">

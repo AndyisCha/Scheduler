@@ -144,36 +144,38 @@ export function TeachersTab({ slotId, slotConfig, onUpdate }: TeachersTabProps) 
 
       {/* Add Teacher Form */}
       <div className="flex flex-col items-center space-y-6">
-        <div className="w-full max-w-2xl space-y-4">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <label htmlFor="teacherName" className="block text-sm font-medium text-gray-700 mb-2">
-                선생님 이름
-              </label>
-              <input
-                type="text"
-                id="teacherName"
-                value={newTeacherName}
-                onChange={(e) => setNewTeacherName(e.target.value)}
-                className="w-full px-4 py-3 bg-gray-800 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
-                placeholder="선생님 이름을 입력하세요"
-                disabled={isAdding}
-              />
-            </div>
-            <div>
-              <label htmlFor="teacherKind" className="block text-sm font-medium text-gray-700 mb-2">
-                종류
-              </label>
-              <select
-                id="teacherKind"
-                value={newTeacherKind}
-                onChange={(e) => setNewTeacherKind(e.target.value as 'H_K_POOL' | 'FOREIGN')}
-                className="w-full px-4 py-3 bg-gray-800 border border-gray-600 rounded-lg text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
-                disabled={isAdding}
-              >
-                <option value="H_K_POOL">홈룸/한국어</option>
-                <option value="FOREIGN">외국인</option>
-              </select>
+        <div className="w-full max-w-2xl bg-gray-700 rounded-lg p-6 border border-gray-600">
+          <div className="space-y-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label htmlFor="teacherName" className="block text-sm font-medium text-gray-300 mb-2">
+                  선생님 이름
+                </label>
+                <input
+                  type="text"
+                  id="teacherName"
+                  value={newTeacherName}
+                  onChange={(e) => setNewTeacherName(e.target.value)}
+                  className="w-full px-4 py-3 bg-gray-800 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
+                  placeholder="선생님 이름을 입력하세요"
+                  disabled={isAdding}
+                />
+              </div>
+              <div>
+                <label htmlFor="teacherKind" className="block text-sm font-medium text-gray-300 mb-2">
+                  종류
+                </label>
+                <select
+                  id="teacherKind"
+                  value={newTeacherKind}
+                  onChange={(e) => setNewTeacherKind(e.target.value as 'H_K_POOL' | 'FOREIGN')}
+                  className="w-full px-4 py-3 bg-gray-800 border border-gray-600 rounded-lg text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
+                  disabled={isAdding}
+                >
+                  <option value="H_K_POOL">홈룸/한국어</option>
+                  <option value="FOREIGN">외국인</option>
+                </select>
+              </div>
             </div>
           </div>
         </div>
@@ -202,7 +204,7 @@ export function TeachersTab({ slotId, slotConfig, onUpdate }: TeachersTabProps) 
       {/* Teachers Lists */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* Homeroom/Korean Teachers */}
-        <div className="bg-gray-800 rounded-lg p-4 border border-gray-600">
+        <div className="bg-gray-700 rounded-lg p-4 border border-gray-600">
           <div className="flex items-center mb-4">
             <div className="w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center mr-3">
               <span className="text-lg">🏠</span>
@@ -215,7 +217,7 @@ export function TeachersTab({ slotId, slotConfig, onUpdate }: TeachersTabProps) 
           
           {homeroomTeachers.length === 0 ? (
             <div className="text-center py-6">
-              <div className="w-12 h-12 bg-gray-700 rounded-full flex items-center justify-center mx-auto mb-3">
+              <div className="w-12 h-12 bg-gray-600 rounded-full flex items-center justify-center mx-auto mb-3">
                 <svg className="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z" />
                 </svg>
@@ -228,7 +230,7 @@ export function TeachersTab({ slotId, slotConfig, onUpdate }: TeachersTabProps) 
               {homeroomTeachers.map((teacher) => (
                 <div
                   key={teacher.id}
-                  className="flex items-center justify-between bg-gray-700 rounded-lg p-3 border border-gray-600 hover:bg-gray-600 transition-colors"
+                  className="flex items-center justify-between bg-gray-600 rounded-lg p-3 border border-gray-500 hover:bg-gray-500 transition-colors"
                 >
                   <div className="flex items-center">
                     <div className="w-6 h-6 bg-blue-500 rounded-full flex items-center justify-center mr-2">
@@ -254,7 +256,7 @@ export function TeachersTab({ slotId, slotConfig, onUpdate }: TeachersTabProps) 
         </div>
 
         {/* Foreign Teachers */}
-        <div className="bg-gray-800 rounded-lg p-4 border border-gray-600">
+        <div className="bg-gray-700 rounded-lg p-4 border border-gray-600">
           <div className="flex items-center mb-4">
             <div className="w-10 h-10 bg-green-600 rounded-full flex items-center justify-center mr-3">
               <span className="text-lg">🌍</span>
@@ -267,7 +269,7 @@ export function TeachersTab({ slotId, slotConfig, onUpdate }: TeachersTabProps) 
           
           {foreignTeachers.length === 0 ? (
             <div className="text-center py-6">
-              <div className="w-12 h-12 bg-gray-700 rounded-full flex items-center justify-center mx-auto mb-3">
+              <div className="w-12 h-12 bg-gray-600 rounded-full flex items-center justify-center mx-auto mb-3">
                 <svg className="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z" />
                 </svg>
@@ -280,7 +282,7 @@ export function TeachersTab({ slotId, slotConfig, onUpdate }: TeachersTabProps) 
               {foreignTeachers.map((teacher) => (
                 <div
                   key={teacher.id}
-                  className="flex items-center justify-between bg-gray-700 rounded-lg p-3 border border-gray-600 hover:bg-gray-600 transition-colors"
+                  className="flex items-center justify-between bg-gray-600 rounded-lg p-3 border border-gray-500 hover:bg-gray-500 transition-colors"
                 >
                   <div className="flex items-center">
                     <div className="w-6 h-6 bg-green-500 rounded-full flex items-center justify-center mr-2">
