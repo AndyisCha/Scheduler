@@ -134,19 +134,19 @@ export function TeachersTab({ slotId, slotConfig, onUpdate }: TeachersTabProps) 
   }
 
   return (
-    <div className="p-6">
-      <div className="mb-6">
-        <h3 className="text-lg font-medium text-gray-900 mb-2">선생님 관리</h3>
-        <p className="text-sm text-gray-600">
+    <div className="space-y-8">
+      <div className="text-center">
+        <h3 className="text-2xl font-bold text-gray-900 mb-2">선생님 관리</h3>
+        <p className="text-gray-600">
           홈룸/한국어 풀과 외국인 선생님을 관리하세요
         </p>
       </div>
 
       {/* Add Teacher Form */}
-      <form onSubmit={handleAddTeacher} className="mb-8 bg-gray-50 p-4 rounded-lg">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div>
-            <label htmlFor="teacherName" className="block text-sm font-medium text-gray-700">
+      <form onSubmit={handleAddTeacher} className="bg-gradient-to-r from-blue-50 to-indigo-50 p-6 rounded-xl border border-blue-100">
+        <div className="flex flex-col sm:flex-row gap-4 items-end">
+          <div className="flex-1">
+            <label htmlFor="teacherName" className="block text-sm font-semibold text-gray-700 mb-2">
               선생님 이름
             </label>
             <input
@@ -154,61 +154,98 @@ export function TeachersTab({ slotId, slotConfig, onUpdate }: TeachersTabProps) 
               id="teacherName"
               value={newTeacherName}
               onChange={(e) => setNewTeacherName(e.target.value)}
-              className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
               placeholder="선생님 이름을 입력하세요"
               disabled={isAdding}
             />
           </div>
-          <div>
-            <label htmlFor="teacherKind" className="block text-sm font-medium text-gray-700">
+          <div className="flex-1">
+            <label htmlFor="teacherKind" className="block text-sm font-semibold text-gray-700 mb-2">
               종류
             </label>
             <select
               id="teacherKind"
               value={newTeacherKind}
               onChange={(e) => setNewTeacherKind(e.target.value as 'H_K_POOL' | 'FOREIGN')}
-              className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
               disabled={isAdding}
             >
               <option value="H_K_POOL">홈룸/한국어</option>
               <option value="FOREIGN">외국인</option>
             </select>
           </div>
-          <div className="flex items-end">
-            <button
-              type="submit"
-              disabled={isAdding || !newTeacherName.trim()}
-              className="w-full bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              {isAdding ? '추가 중...' : '추가'}
-            </button>
-          </div>
+          <button
+            type="submit"
+            disabled={isAdding || !newTeacherName.trim()}
+            className="w-full sm:w-auto bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center justify-center"
+          >
+            {isAdding ? (
+              <>
+                <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+                추가 중...
+              </>
+            ) : (
+              <>
+                <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                </svg>
+                추가
+              </>
+            )}
+          </button>
         </div>
       </form>
 
       {/* Teachers Lists */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         {/* Homeroom/Korean Teachers */}
-        <div>
-          <h4 className="text-md font-medium text-gray-900 mb-3 flex items-center">
-            <span className="mr-2">🏠</span>
-            홈룸/한국어 선생님 ({homeroomTeachers.length})
-          </h4>
+        <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl p-6 border border-blue-200">
+          <div className="flex items-center mb-6">
+            <div className="w-12 h-12 bg-blue-600 rounded-full flex items-center justify-center mr-4">
+              <span className="text-2xl">🏠</span>
+            </div>
+            <div>
+              <h4 className="text-xl font-bold text-gray-900">홈룸/한국어 선생님</h4>
+              <p className="text-blue-600 font-semibold">{homeroomTeachers.length}명</p>
+            </div>
+          </div>
+          
           {homeroomTeachers.length === 0 ? (
-            <p className="text-gray-500 text-sm">등록된 홈룸/한국어 선생님이 없습니다.</p>
+            <div className="text-center py-8">
+              <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <svg className="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z" />
+                </svg>
+              </div>
+              <p className="text-gray-600 font-medium">등록된 홈룸/한국어 선생님이 없습니다</p>
+              <p className="text-sm text-gray-500 mt-1">위의 폼에서 선생님을 추가해보세요</p>
+            </div>
           ) : (
-            <div className="space-y-2">
+            <div className="space-y-3">
               {homeroomTeachers.map((teacher) => (
                 <div
                   key={teacher.id}
-                  className="flex items-center justify-between bg-white border border-gray-200 rounded-md p-3"
+                  className="flex items-center justify-between bg-white rounded-lg p-4 shadow-sm border border-blue-100 hover:shadow-md transition-shadow"
                 >
-                  <span className="text-sm font-medium text-gray-900">{teacher.teacher_name}</span>
+                  <div className="flex items-center">
+                    <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center mr-3">
+                      <span className="text-blue-600 font-semibold text-sm">
+                        {teacher.teacher_name.charAt(0)}
+                      </span>
+                    </div>
+                    <span className="font-semibold text-gray-900">{teacher.teacher_name}</span>
+                  </div>
                   <button
                     onClick={() => handleRemoveTeacher(teacher.id, teacher.teacher_name, teacher.kind)}
-                    className="text-red-600 hover:text-red-900 text-sm"
+                    className="text-red-600 hover:text-red-800 hover:bg-red-50 p-2 rounded-lg transition-colors"
+                    title="제거"
                   >
-                    제거
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                    </svg>
                   </button>
                 </div>
               ))}
@@ -217,26 +254,50 @@ export function TeachersTab({ slotId, slotConfig, onUpdate }: TeachersTabProps) 
         </div>
 
         {/* Foreign Teachers */}
-        <div>
-          <h4 className="text-md font-medium text-gray-900 mb-3 flex items-center">
-            <span className="mr-2">🌍</span>
-            외국인 선생님 ({foreignTeachers.length})
-          </h4>
+        <div className="bg-gradient-to-br from-green-50 to-green-100 rounded-xl p-6 border border-green-200">
+          <div className="flex items-center mb-6">
+            <div className="w-12 h-12 bg-green-600 rounded-full flex items-center justify-center mr-4">
+              <span className="text-2xl">🌍</span>
+            </div>
+            <div>
+              <h4 className="text-xl font-bold text-gray-900">외국인 선생님</h4>
+              <p className="text-green-600 font-semibold">{foreignTeachers.length}명</p>
+            </div>
+          </div>
+          
           {foreignTeachers.length === 0 ? (
-            <p className="text-gray-500 text-sm">등록된 외국인 선생님이 없습니다.</p>
+            <div className="text-center py-8">
+              <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <svg className="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z" />
+                </svg>
+              </div>
+              <p className="text-gray-600 font-medium">등록된 외국인 선생님이 없습니다</p>
+              <p className="text-sm text-gray-500 mt-1">위의 폼에서 선생님을 추가해보세요</p>
+            </div>
           ) : (
-            <div className="space-y-2">
+            <div className="space-y-3">
               {foreignTeachers.map((teacher) => (
                 <div
                   key={teacher.id}
-                  className="flex items-center justify-between bg-white border border-gray-200 rounded-md p-3"
+                  className="flex items-center justify-between bg-white rounded-lg p-4 shadow-sm border border-green-100 hover:shadow-md transition-shadow"
                 >
-                  <span className="text-sm font-medium text-gray-900">{teacher.teacher_name}</span>
+                  <div className="flex items-center">
+                    <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center mr-3">
+                      <span className="text-green-600 font-semibold text-sm">
+                        {teacher.teacher_name.charAt(0)}
+                      </span>
+                    </div>
+                    <span className="font-semibold text-gray-900">{teacher.teacher_name}</span>
+                  </div>
                   <button
                     onClick={() => handleRemoveTeacher(teacher.id, teacher.teacher_name, teacher.kind)}
-                    className="text-red-600 hover:text-red-900 text-sm"
+                    className="text-red-600 hover:text-red-800 hover:bg-red-50 p-2 rounded-lg transition-colors"
+                    title="제거"
                   >
-                    제거
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                    </svg>
                   </button>
                 </div>
               ))}

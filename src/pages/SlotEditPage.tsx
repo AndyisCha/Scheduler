@@ -73,81 +73,95 @@ export function SlotEditPage() {
   }
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 min-h-screen">
-      {/* Header */}
-      <div className="mb-8">
-        <div className="flex items-center justify-between">
-          <div>
-            <nav className="flex" aria-label="Breadcrumb">
-              <ol className="flex items-center space-x-4">
-                <li>
-                  <Link to="/slots" className="text-gray-400 hover:text-gray-500">
-                    슬롯 목록
-                  </Link>
-                </li>
-                <li>
-                  <div className="flex items-center">
-                    <svg className="flex-shrink-0 h-5 w-5 text-gray-300" fill="currentColor" viewBox="0 0 20 20">
-                      <path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd" />
+    <div className="min-h-screen bg-gray-50">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {/* Header */}
+        <div className="mb-8">
+          <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+            <div className="flex items-center justify-between">
+              <div className="flex-1">
+                <nav className="flex items-center space-x-2 mb-4" aria-label="Breadcrumb">
+                  <Link 
+                    to="/slots" 
+                    className="inline-flex items-center text-sm font-medium text-gray-500 hover:text-gray-700 transition-colors"
+                  >
+                    <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
                     </svg>
-                    <span className="ml-4 text-gray-500 truncate max-w-xs">{slotConfig.name}</span>
+                    <span>1. 슬롯 목록</span>
+                  </Link>
+                  <span className="text-gray-300">/</span>
+                  <span className="text-sm font-medium text-gray-900">2.</span>
+                </nav>
+                
+                <div className="flex items-start justify-between">
+                  <div className="flex-1 min-w-0">
+                    <h1 className="text-2xl font-bold text-gray-900 mb-1">
+                      {slotConfig.name}
+                    </h1>
+                    {slotConfig.description && (
+                      <p className="text-sm text-gray-600 mb-3">{slotConfig.description}</p>
+                    )}
+                    <div className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                      {slotConfig.dayGroup} 스케줄
+                    </div>
                   </div>
-                </li>
-              </ol>
+                  
+                  <div className="flex items-center space-x-3 ml-6">
+                    <Link
+                      to={`/slots/${id}/history`}
+                      className="inline-flex items-center px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors"
+                    >
+                      <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                      </svg>
+                      히스토리 보기
+                    </Link>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Tabs */}
+        <div className="mb-8">
+          <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-1">
+            <nav className="flex space-x-1">
+              {tabs.map((tab) => (
+                <button
+                  key={tab.id}
+                  onClick={() => setActiveTab(tab.id)}
+                  className={`${
+                    activeTab === tab.id
+                      ? 'bg-blue-50 text-blue-700 border-blue-200'
+                      : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50 border-transparent'
+                  } flex items-center px-4 py-3 text-sm font-medium rounded-lg border transition-all duration-200`}
+                >
+                  <span className="mr-2 text-base">{tab.icon}</span>
+                  <span>{tab.name}</span>
+                </button>
+              ))}
             </nav>
-            <h1 className="mt-2 text-3xl font-bold text-gray-900">{slotConfig.name}</h1>
-            {slotConfig.description && (
-              <p className="mt-2 text-gray-600">{slotConfig.description}</p>
+          </div>
+        </div>
+
+        {/* Tab Content */}
+        <div className="bg-white rounded-xl shadow-sm border border-gray-200 min-h-[800px]">
+          <div className="p-8">
+            {activeTab === 'teachers' && (
+              <TeachersTab slotId={id!} slotConfig={slotConfig} onUpdate={setSlotConfig} />
+            )}
+            {activeTab === 'constraints' && (
+              <ConstraintsTab slotId={id!} slotConfig={slotConfig} onUpdate={setSlotConfig} />
+            )}
+            {activeTab === 'homerooms' && (
+              <FixedHomeroomsTab slotId={id!} slotConfig={slotConfig} onUpdate={setSlotConfig} />
+            )}
+            {activeTab === 'options' && (
+              <GlobalOptionsTab slotId={id!} slotConfig={slotConfig} onUpdate={setSlotConfig} />
             )}
           </div>
-          <div className="flex items-center space-x-3">
-            <Link
-              to={`/slots/${id}/history`}
-              className="bg-gray-600 text-white px-4 py-2 rounded-md hover:bg-gray-700 transition-colors"
-            >
-              📊 히스토리 보기
-            </Link>
-          </div>
-        </div>
-      </div>
-
-      {/* Tabs */}
-      <div className="mb-8">
-        <div className="border-b border-gray-200">
-          <nav className="-mb-px flex space-x-8">
-            {tabs.map((tab) => (
-              <button
-                key={tab.id}
-                onClick={() => setActiveTab(tab.id)}
-                className={`${
-                  activeTab === tab.id
-                    ? 'border-blue-500 text-blue-600'
-                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-                } whitespace-nowrap py-2 px-1 border-b-2 font-medium text-sm flex items-center space-x-2`}
-              >
-                <span>{tab.icon}</span>
-                <span>{tab.name}</span>
-              </button>
-            ))}
-          </nav>
-        </div>
-      </div>
-
-      {/* Tab Content */}
-      <div className="bg-white shadow rounded-lg min-h-[800px] overflow-y-auto">
-        <div className="p-6">
-          {activeTab === 'teachers' && (
-            <TeachersTab slotId={id!} slotConfig={slotConfig} onUpdate={setSlotConfig} />
-          )}
-          {activeTab === 'constraints' && (
-            <ConstraintsTab slotId={id!} slotConfig={slotConfig} onUpdate={setSlotConfig} />
-          )}
-          {activeTab === 'homerooms' && (
-            <FixedHomeroomsTab slotId={id!} slotConfig={slotConfig} onUpdate={setSlotConfig} />
-          )}
-          {activeTab === 'options' && (
-            <GlobalOptionsTab slotId={id!} slotConfig={slotConfig} onUpdate={setSlotConfig} />
-          )}
         </div>
       </div>
     </div>
