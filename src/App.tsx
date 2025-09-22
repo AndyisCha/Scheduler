@@ -87,123 +87,128 @@ function AppContent() {
                <Route path="/" element={<Navigate to="/slots" replace />} />
              </Routes>
             <RequireAuth>
-              <ErrorBoundary>
-                <div className="min-h-screen bg-secondary transition-theme">
-                  <SkipToContent />
-                  
-                  {/* Supabase Configuration Banner */}
-                  <SupabaseBanner />
-                  
-                  {/* Header */}
-                  <Header />
-                  
-                  <main id="main-content" className="p-8" tabIndex={-1}>
-                    <div className="max-w-7xl mx-auto">
-                      <h1 className="text-4xl font-bold text-primary mb-8 text-center">
-                        {useI18nStore.getState().t('schedule.title')}
-                      </h1>
+              <Routes>
+                <Route path="/slots" element={
+                  <ErrorBoundary>
+                    <div className="min-h-screen bg-secondary transition-theme">
+                      <SkipToContent />
                       
-                      {/* Navigation Tabs */}
-                      <Navigation activeTab={activeTab} onTabChange={setActiveTab} />
+                      {/* Supabase Configuration Banner */}
+                      <SupabaseBanner />
                       
-                      <div className="space-y-6">
-                        {/* MWF Scheduler Section */}
-                        {activeTab === 'mwf' && (
-                          <MwfScheduler />
-                        )}
+                      {/* Header */}
+                      <Header />
+                      
+                      <main id="main-content" className="p-8" tabIndex={-1}>
+                        <div className="max-w-7xl mx-auto">
+                          <h1 className="text-4xl font-bold text-primary mb-8 text-center">
+                            {useI18nStore.getState().t('schedule.title')}
+                          </h1>
+                          
+                          {/* Navigation Tabs */}
+                          <Navigation activeTab={activeTab} onTabChange={setActiveTab} />
+                          
+                          <div className="space-y-6">
+                            {/* MWF Scheduler Section */}
+                            {activeTab === 'mwf' && (
+                              <MwfScheduler />
+                            )}
 
-                        {/* TT Scheduler Section */}
-                        {activeTab === 'tt' && (
-                          <TtScheduler />
-                        )}
+                            {/* TT Scheduler Section */}
+                            {activeTab === 'tt' && (
+                              <TtScheduler />
+                            )}
 
-              {/* Unified Scheduler Section */}
-              {activeTab === 'unified' && (
-                <UnifiedScheduler />
-              )}
+                            {/* Unified Scheduler Section */}
+                            {activeTab === 'unified' && (
+                              <UnifiedScheduler />
+                            )}
 
-                {/* Slot Management Section */}
-                {activeTab === 'slots' && (
-                  <Routes>
-                    <Route path="/" element={<Navigate to="/slots" replace />} />
-                    <Route path="/slots" element={<SlotListPage />} />
-                    <Route path="/slots/new" element={<NewSlotPage />} />
-                    <Route path="/slots/:id" element={<SlotEditPage />} />
-                    <Route path="/slots/:id/history" element={<SlotHistoryPage />} />
-                    <Route path="/slots/:id/history/compare" element={<ScheduleComparePage />} />
-                    <Route path="/history" element={<HistoryPage />} />
-                    <Route path="/me/schedule" element={<TeacherDashboardPage />} />
-                    <Route path="/reports/classes" element={<ClassReportsPage />} />
-                    <Route path="*" element={<Navigate to="/slots" replace />} />
-                  </Routes>
-                )}
+                            {/* Slot Management Section */}
+                            {activeTab === 'slots' && (
+                              <SlotListPage />
+                            )}
 
-                {/* History Section */}
-                {activeTab === 'history' && (
-                  <HistoryPage />
-                )}
+                            {/* History Section */}
+                            {activeTab === 'history' && (
+                              <HistoryPage />
+                            )}
 
-                {/* Teacher Dashboard Section */}
-                {activeTab === 'teacher-dashboard' && (
-                  <TeacherDashboardPage />
-                )}
+                            {/* Teacher Dashboard Section */}
+                            {activeTab === 'teacher-dashboard' && (
+                              <TeacherDashboardPage />
+                            )}
 
-                {/* Reports Section */}
-                {activeTab === 'reports' && (
-                  <ClassReportsPage />
-                )}
+                            {/* Reports Section */}
+                            {activeTab === 'reports' && (
+                              <ClassReportsPage />
+                            )}
 
-                {/* Admin Slots Section */}
-                {activeTab === 'admin-slots' && (
-                  <RequireSuperAdmin>
-                    <AdminSlotsPage />
-                  </RequireSuperAdmin>
-                )}
+                            {/* Admin Slots Section */}
+                            {activeTab === 'admin-slots' && (
+                              <RequireSuperAdmin>
+                                <AdminSlotsPage />
+                              </RequireSuperAdmin>
+                            )}
 
-              {/* Super Admin Section */}
-              {activeTab === 'super-admin' && (
-                <RequireSuperAdmin>
-                  <SuperAdminSlotList />
-                </RequireSuperAdmin>
-              )}
+                            {/* Super Admin Section */}
+                            {activeTab === 'super-admin' && (
+                              <RequireSuperAdmin>
+                                <SuperAdminSlotList />
+                              </RequireSuperAdmin>
+                            )}
 
-              {/* Sandbox Section */}
-              {activeTab === 'sandbox' && (
-                <RequireSuperAdmin>
-                  <AdminSandboxPage />
-                </RequireSuperAdmin>
-              )}
+                            {/* Sandbox Section */}
+                            {activeTab === 'sandbox' && (
+                              <RequireSuperAdmin>
+                                <AdminSandboxPage />
+                              </RequireSuperAdmin>
+                            )}
 
-              {/* Share Links Admin Section */}
-              {activeTab === 'share-admin' && (
-                <RequireSuperAdmin>
-                  <ShareLinkAdminPage />
-                </RequireSuperAdmin>
-              )}
+                            {/* Share Links Admin Section */}
+                            {activeTab === 'share-admin' && (
+                              <RequireSuperAdmin>
+                                <ShareLinkAdminPage />
+                              </RequireSuperAdmin>
+                            )}
 
-              {/* Development Tools Section */}
-              {activeTab === 'dev-tools' && import.meta.env.DEV && (
-                <div className="space-y-6">
-                  <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
-                    <h2 className="text-lg font-medium text-yellow-800 mb-2">개발 도구</h2>
-                    <p className="text-sm text-yellow-700">
-                      이 섹션은 개발 모드에서만 표시됩니다. 프로덕션에서는 보이지 않습니다.
-                    </p>
-                  </div>
-                  <PerformanceTestPanel />
-                </div>
-              )}
+                            {/* Development Tools Section */}
+                            {activeTab === 'dev-tools' && import.meta.env.DEV && (
+                              <div className="space-y-6">
+                                <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+                                  <h2 className="text-lg font-medium text-yellow-800 mb-2">개발 도구</h2>
+                                  <p className="text-sm text-yellow-700">
+                                    이 섹션은 개발 모드에서만 표시됩니다. 프로덕션에서는 보이지 않습니다.
+                                  </p>
+                                </div>
+                                <PerformanceTestPanel />
+                              </div>
+                            )}
 
-              {/* Telemetry Dashboard Section */}
-              {activeTab === 'telemetry' && (
-                <TelemetryDashboard />
-              )}
-                      </div>
+                            {/* Telemetry Dashboard Section */}
+                            {activeTab === 'telemetry' && (
+                              <TelemetryDashboard />
+                            )}
+                          </div>
+                        </div>
+                      </main>
+                      <EnvironmentBadge />
                     </div>
-                  </main>
-                  <EnvironmentBadge />
-                </div>
-              </ErrorBoundary>
+                  </ErrorBoundary>
+                } />
+                
+                {/* Additional protected routes */}
+                <Route path="/slots/new" element={<NewSlotPage />} />
+                <Route path="/slots/:id" element={<SlotEditPage />} />
+                <Route path="/slots/:id/history" element={<SlotHistoryPage />} />
+                <Route path="/slots/:id/history/compare" element={<ScheduleComparePage />} />
+                <Route path="/history" element={<HistoryPage />} />
+                <Route path="/me/schedule" element={<TeacherDashboardPage />} />
+                <Route path="/reports/classes" element={<ClassReportsPage />} />
+                
+                {/* Catch-all route */}
+                <Route path="*" element={<Navigate to="/slots" replace />} />
+              </Routes>
               
               {/* Metrics Panel */}
               <MetricsPanel 
