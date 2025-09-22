@@ -124,6 +124,7 @@ function AppContent() {
                 {/* Slot Management Section */}
                 {activeTab === 'slots' && (
                   <Routes>
+                    <Route path="/" element={<Navigate to="/slots" replace />} />
                     <Route path="/slots" element={<SlotListPage />} />
                     <Route path="/slots/new" element={<NewSlotPage />} />
                     <Route path="/slots/:id" element={<SlotEditPage />} />
