@@ -84,6 +84,7 @@ function AppContent() {
              <Routes>
                <Route path="/shared/:token" element={<SecureSharedSnapshotPage />} />
                <Route path="/shared-legacy/:token" element={<SharedSnapshotPage />} />
+               <Route path="/" element={<Navigate to="/slots" replace />} />
              </Routes>
             <RequireAuth>
               <ErrorBoundary>
