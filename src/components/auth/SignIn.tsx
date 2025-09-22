@@ -53,60 +53,69 @@ export function SignIn({ onSuccess }: SignInProps) {
       <div className="w-full max-w-6xl mx-auto">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           {/* Left side - Branding & Info */}
-          <div className="text-center lg:text-left space-y-8">
+          <div className="flex flex-col items-center lg:items-start space-y-8">
+            {/* Icon and Title */}
             <div className="flex flex-col items-center lg:items-start space-y-6">
-              <div className="w-20 h-20 bg-blue-600 rounded-full flex items-center justify-center shadow-lg">
-                <svg className="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <div className="w-24 h-24 bg-blue-600 rounded-full flex items-center justify-center shadow-lg">
+                <svg className="w-12 h-12 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                 </svg>
               </div>
-              <div>
+              <div className="text-center lg:text-left">
                 <h1 className="text-4xl lg:text-5xl font-bold text-gray-900 mb-4">
                   스케줄러 대시보드
                 </h1>
-                <p className="text-lg text-gray-600 mb-6">
+                <p className="text-lg text-gray-600 mb-8">
                   효율적인 시간표 관리 시스템
                 </p>
-                <div className="space-y-3 text-gray-500">
-                  <div className="flex items-center justify-center lg:justify-start space-x-3">
-                    <svg className="w-5 h-5 text-green-500" fill="currentColor" viewBox="0 0 20 20">
-                      <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                    </svg>
-                    <span>직관적인 인터페이스</span>
-                  </div>
-                  <div className="flex items-center justify-center lg:justify-start space-x-3">
-                    <svg className="w-5 h-5 text-green-500" fill="currentColor" viewBox="0 0 20 20">
-                      <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                    </svg>
-                    <span>실시간 스케줄 생성</span>
-                  </div>
-                  <div className="flex items-center justify-center lg:justify-start space-x-3">
-                    <svg className="w-5 h-5 text-green-500" fill="currentColor" viewBox="0 0 20 20">
-                      <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                    </svg>
-                    <span>스마트 제약 조건 관리</span>
-                  </div>
+              </div>
+            </div>
+
+            {/* Feature List */}
+            <div className="space-y-4">
+              <div className="flex items-center space-x-4">
+                <div className="flex-shrink-0">
+                  <svg className="w-6 h-6 text-green-500" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                  </svg>
                 </div>
+                <span className="text-lg text-gray-700">직관적인 인터페이스</span>
+              </div>
+              <div className="flex items-center space-x-4">
+                <div className="flex-shrink-0">
+                  <svg className="w-6 h-6 text-green-500" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                  </svg>
+                </div>
+                <span className="text-lg text-gray-700">실시간 스케줄 생성</span>
+              </div>
+              <div className="flex items-center space-x-4">
+                <div className="flex-shrink-0">
+                  <svg className="w-6 h-6 text-green-500" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                  </svg>
+                </div>
+                <span className="text-lg text-gray-700">스마트 제약 조건 관리</span>
               </div>
             </div>
           </div>
 
           {/* Right side - Login Form */}
-          <div className="flex justify-center lg:justify-end">
-            <div className="w-full max-w-md">
-              <div className="bg-white py-10 px-8 shadow-2xl rounded-2xl border border-gray-100">
+          <div className="flex justify-center lg:justify-center">
+            <div className="w-full max-w-md mx-auto">
+              <div className="bg-neutral-900 p-8 rounded-2xl shadow-2xl">
                 <div className="text-center mb-8">
-                  <h2 className="text-2xl font-bold text-gray-900 mb-2">
+                  <h2 className="text-2xl font-bold text-white mb-2">
                     로그인
                   </h2>
-                  <p className="text-gray-600">
+                  <p className="text-gray-300">
                     계정에 로그인하세요
                   </p>
                 </div>
                 
                 {/* Environment Status */}
                 {status === 'disabled' && statusReason === 'ENV_MISSING' && (
-                  <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-6">
+                  <div className="bg-red-900/50 border border-red-700 rounded-lg p-4 mb-6">
                     <div className="flex items-center justify-between">
                       <div className="flex">
                         <div className="flex-shrink-0">
@@ -115,14 +124,14 @@ export function SignIn({ onSuccess }: SignInProps) {
                           </svg>
                         </div>
                         <div className="ml-3">
-                          <p className="text-sm text-red-700">
-                            Supabase env missing. Check <code>.env.local</code> and restart dev server.
+                          <p className="text-sm text-red-300">
+                            Supabase env missing. Check <code className="text-red-200">.env.local</code> and restart dev server.
                           </p>
                         </div>
                       </div>
                       <button
                         onClick={handleRecheckEnv}
-                        className="ml-4 text-xs bg-red-100 hover:bg-red-200 text-red-800 px-2 py-1 rounded transition-colors"
+                        className="ml-4 text-xs bg-red-800 hover:bg-red-700 text-red-100 px-2 py-1 rounded transition-colors"
                       >
                         Recheck ENV
                       </button>
@@ -133,7 +142,7 @@ export function SignIn({ onSuccess }: SignInProps) {
                 <form className="space-y-6" onSubmit={handleSubmit}>
                   <div className="space-y-4">
                     <div>
-                      <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
+                      <label htmlFor="email" className="block text-sm font-medium text-gray-300 mb-2">
                         이메일 주소
                       </label>
                       <input
@@ -142,7 +151,7 @@ export function SignIn({ onSuccess }: SignInProps) {
                         type="email"
                         autoComplete="email"
                         required
-                        className="relative block w-full px-4 py-3 border border-gray-300 placeholder-gray-400 text-gray-900 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+                        className="relative block w-full px-4 py-3 border border-gray-600 placeholder-gray-400 text-white bg-neutral-800 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
                         placeholder="이메일 주소를 입력하세요"
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
@@ -150,7 +159,7 @@ export function SignIn({ onSuccess }: SignInProps) {
                       />
                     </div>
                     <div>
-                      <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-2">
+                      <label htmlFor="password" className="block text-sm font-medium text-gray-300 mb-2">
                         비밀번호
                       </label>
                       <input
@@ -159,7 +168,7 @@ export function SignIn({ onSuccess }: SignInProps) {
                         type="password"
                         autoComplete="current-password"
                         required
-                        className="relative block w-full px-4 py-3 border border-gray-300 placeholder-gray-400 text-gray-900 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+                        className="relative block w-full px-4 py-3 border border-gray-600 placeholder-gray-400 text-white bg-neutral-800 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
                         placeholder="비밀번호를 입력하세요"
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
@@ -189,7 +198,7 @@ export function SignIn({ onSuccess }: SignInProps) {
                   </div>
 
                   <div className="text-center">
-                    <p className="text-xs text-gray-500">
+                    <p className="text-xs text-gray-400">
                       계정이 없으신가요? 관리자에게 문의하세요.
                     </p>
                   </div>
