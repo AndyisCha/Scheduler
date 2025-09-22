@@ -147,8 +147,8 @@ export function SlotEditPage() {
         </div>
 
         {/* Tab Content */}
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 min-h-[800px]">
-          <div className="p-8">
+        <div className="bg-white rounded-xl shadow-sm border border-gray-200 min-h-[600px]">
+          <div className="p-6">
             {activeTab === 'teachers' && (
               <TeachersTab slotId={id!} slotConfig={slotConfig} onUpdate={setSlotConfig} />
             )}
