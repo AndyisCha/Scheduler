@@ -49,9 +49,9 @@ export function SignIn({ onSuccess }: SignInProps) {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 px-4 py-8">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 px-4 py-8" style={{minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
       <div className="w-full max-w-6xl mx-auto">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center justify-items-center">
           {/* Left side - Branding & Info */}
           <div className="flex flex-col items-center lg:items-start space-y-8">
             {/* Icon and Title */}
@@ -101,9 +101,9 @@ export function SignIn({ onSuccess }: SignInProps) {
           </div>
 
           {/* Right side - Login Form */}
-          <div className="flex justify-center lg:justify-center">
+          <div className="flex justify-center lg:justify-center w-full">
             <div className="w-full max-w-md mx-auto">
-              <div className="bg-neutral-900 p-8 rounded-2xl shadow-2xl">
+              <div className="bg-neutral-900 p-8 rounded-2xl shadow-2xl" style={{margin: '0 auto'}}>
                 <div className="text-center mb-8">
                   <h2 className="text-2xl font-bold text-white mb-2">
                     로그인
