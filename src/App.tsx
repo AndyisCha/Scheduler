@@ -81,14 +81,20 @@ function AppContent() {
       return (
         <ToastProvider>
           <Router>
-             <Routes>
-               <Route path="/shared/:token" element={<SecureSharedSnapshotPage />} />
-               <Route path="/shared-legacy/:token" element={<SharedSnapshotPage />} />
-               <Route path="/" element={<Navigate to="/slots" replace />} />
-             </Routes>
-            <RequireAuth>
-              <Routes>
-                <Route path="/slots" element={
+            <Routes>
+              {/* Public routes */}
+              <Route path="/shared/:token" element={<SecureSharedSnapshotPage />} />
+              <Route path="/shared-legacy/:token" element={<SharedSnapshotPage />} />
+              
+              {/* Protected routes */}
+              <Route path="/" element={
+                <RequireAuth>
+                  <Navigate to="/slots" replace />
+                </RequireAuth>
+              } />
+              
+              <Route path="/slots" element={
+                <RequireAuth>
                   <ErrorBoundary>
                     <div className="min-h-screen bg-secondary transition-theme">
                       <SkipToContent />
@@ -195,27 +201,59 @@ function AppContent() {
                       <EnvironmentBadge />
                     </div>
                   </ErrorBoundary>
-                } />
-                
-                {/* Additional protected routes */}
-                <Route path="/slots/new" element={<NewSlotPage />} />
-                <Route path="/slots/:id" element={<SlotEditPage />} />
-                <Route path="/slots/:id/history" element={<SlotHistoryPage />} />
-                <Route path="/slots/:id/history/compare" element={<ScheduleComparePage />} />
-                <Route path="/history" element={<HistoryPage />} />
-                <Route path="/me/schedule" element={<TeacherDashboardPage />} />
-                <Route path="/reports/classes" element={<ClassReportsPage />} />
-                
-                {/* Catch-all route */}
-                <Route path="*" element={<Navigate to="/slots" replace />} />
-              </Routes>
+                </RequireAuth>
+              } />
               
-              {/* Metrics Panel */}
-              <MetricsPanel 
-                isVisible={isMetricsVisible}
-                onToggle={() => setIsMetricsVisible(!isMetricsVisible)}
-              />
-            </RequireAuth>
+              {/* Additional protected routes */}
+              <Route path="/slots/new" element={
+                <RequireAuth>
+                  <NewSlotPage />
+                </RequireAuth>
+              } />
+              <Route path="/slots/:id" element={
+                <RequireAuth>
+                  <SlotEditPage />
+                </RequireAuth>
+              } />
+              <Route path="/slots/:id/history" element={
+                <RequireAuth>
+                  <SlotHistoryPage />
+                </RequireAuth>
+              } />
+              <Route path="/slots/:id/history/compare" element={
+                <RequireAuth>
+                  <ScheduleComparePage />
+                </RequireAuth>
+              } />
+              <Route path="/history" element={
+                <RequireAuth>
+                  <HistoryPage />
+                </RequireAuth>
+              } />
+              <Route path="/me/schedule" element={
+                <RequireAuth>
+                  <TeacherDashboardPage />
+                </RequireAuth>
+              } />
+              <Route path="/reports/classes" element={
+                <RequireAuth>
+                  <ClassReportsPage />
+                </RequireAuth>
+              } />
+              
+              {/* Catch-all route */}
+              <Route path="*" element={
+                <RequireAuth>
+                  <Navigate to="/slots" replace />
+                </RequireAuth>
+              } />
+            </Routes>
+            
+            {/* Metrics Panel - outside Routes but inside Router */}
+            <MetricsPanel 
+              isVisible={isMetricsVisible}
+              onToggle={() => setIsMetricsVisible(!isMetricsVisible)}
+            />
           </Router>
         </ToastProvider>
       )
