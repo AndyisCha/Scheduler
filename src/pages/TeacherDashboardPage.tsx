@@ -375,7 +375,7 @@ export function TeacherDashboardPage() {
                     role: s.role as 'H' | 'K' | 'F',
                     classId: s.classId,
                     round: s.round as 1 | 2 | 3 | 4,
-                    period: s.period as 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8,
+                    period: s.period as 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 1.5 | 2.5 | 3.5 | 4.5 | 5.5 | 6.5 | 7.5,
                     time: s.time,
                     isExam: s.isExam
                   })),
@@ -384,7 +384,7 @@ export function TeacherDashboardPage() {
                     role: s.role as 'H' | 'K' | 'F',
                     classId: s.classId,
                     round: s.round as 1 | 2 | 3 | 4,
-                    period: s.period as 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8,
+                    period: s.period as 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 1.5 | 2.5 | 3.5 | 4.5 | 5.5 | 6.5 | 7.5,
                     time: s.time,
                     isExam: s.isExam
                   })),
@@ -393,16 +393,16 @@ export function TeacherDashboardPage() {
                     role: s.role as 'H' | 'K' | 'F',
                     classId: s.classId,
                     round: s.round as 1 | 2 | 3 | 4,
-                    period: s.period as 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8,
+                    period: s.period as 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 1.5 | 2.5 | 3.5 | 4.5 | 5.5 | 6.5 | 7.5,
                     time: s.time,
                     isExam: s.isExam
                   }))
                 }
               },
               dayGrid: {
-                월: { 1: [], 2: [], 3: [], 4: [], 5: [], 6: [], 7: [], 8: [] },
-                수: { 1: [], 2: [], 3: [], 4: [], 5: [], 6: [], 7: [], 8: [] },
-                금: { 1: [], 2: [], 3: [], 4: [], 5: [], 6: [], 7: [], 8: [] }
+                월: { 1: [], 1.5: [], 2: [], 2.5: [], 3: [], 3.5: [], 4: [], 4.5: [], 5: [], 5.5: [], 6: [], 6.5: [], 7: [], 7.5: [], 8: [] },
+                수: { 1: [], 1.5: [], 2: [], 2.5: [], 3: [], 3.5: [], 4: [], 4.5: [], 5: [], 5.5: [], 6: [], 6.5: [], 7: [], 7.5: [], 8: [] },
+                금: { 1: [], 1.5: [], 2: [], 2.5: [], 3: [], 3.5: [], 4: [], 4.5: [], 5: [], 5.5: [], 6: [], 6.5: [], 7: [], 7.5: [], 8: [] }
               },
               warnings: [],
               metrics: {

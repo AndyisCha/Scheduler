@@ -78,32 +78,53 @@ export const TTGeneratePanel: React.FC = () => {
       const mwfSchedule: MWFScheduleResult = {
         '월': {
           1: { teacher: '김담임', role: 'H', classId: 'R1C1', round: 1, period: 1, time: '14:20-15:05' },
+          1.5: null,
           2: { teacher: '정한국', role: 'K', classId: 'R1C1', round: 1, period: 2, time: '15:10-15:55' },
+          2.5: null,
           3: { teacher: 'John Smith', role: 'F', classId: 'R1C1', round: 1, period: 3, time: '16:15-17:00' },
+          3.5: null,
           4: { teacher: '이담임', role: 'H', classId: 'R2C1', round: 1, period: 4, time: '17:05-17:50' },
+          4.5: null,
           5: { teacher: '한국어', role: 'K', classId: 'R2C1', round: 1, period: 5, time: '18:05-18:55' },
+          5.5: null,
           6: { teacher: 'Sarah Johnson', role: 'F', classId: 'R2C1', round: 1, period: 6, time: '19:00-19:50' },
+          6.5: null,
           7: null,
+          7.5: null,
           8: null
         },
         '수': {
           1: { teacher: '김담임', role: 'H', classId: 'R1C1', round: 1, period: 1, time: '14:20-15:05' },
+          1.5: null,
           2: { teacher: '정한국', role: 'K', classId: 'R1C1', round: 1, period: 2, time: '15:10-15:55' },
+          2.5: null,
           3: { teacher: 'John Smith', role: 'F', classId: 'R1C1', round: 1, period: 3, time: '16:15-17:00' },
+          3.5: null,
           4: { teacher: '이담임', role: 'H', classId: 'R2C1', round: 1, period: 4, time: '17:05-17:50' },
+          4.5: null,
           5: { teacher: '한국어', role: 'K', classId: 'R2C1', round: 1, period: 5, time: '18:05-18:55' },
+          5.5: null,
           6: { teacher: 'Sarah Johnson', role: 'F', classId: 'R2C1', round: 1, period: 6, time: '19:00-19:50' },
+          6.5: null,
           7: null,
+          7.5: null,
           8: null
         },
         '금': {
           1: { teacher: '김담임', role: 'H', classId: 'R1C1', round: 1, period: 1, time: '14:20-15:05' },
+          1.5: null,
           2: { teacher: '정한국', role: 'K', classId: 'R1C1', round: 1, period: 2, time: '15:10-15:55' },
+          2.5: null,
           3: { teacher: 'John Smith', role: 'F', classId: 'R1C1', round: 1, period: 3, time: '16:15-17:00' },
+          3.5: null,
           4: { teacher: '이담임', role: 'H', classId: 'R2C1', round: 1, period: 4, time: '17:05-17:50' },
+          4.5: null,
           5: { teacher: '한국어', role: 'K', classId: 'R2C1', round: 1, period: 5, time: '18:05-18:55' },
+          5.5: null,
           6: { teacher: 'Sarah Johnson', role: 'F', classId: 'R2C1', round: 1, period: 6, time: '19:00-19:50' },
+          6.5: null,
           7: null,
+          7.5: null,
           8: null
         }
       };

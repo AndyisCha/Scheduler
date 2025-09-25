@@ -38,12 +38,19 @@ export const ScheduleResultCard: React.FC<ScheduleResultCardProps> = ({
   const formatPeriodTime = (period: number) => {
     const timeMap: { [key: number]: string } = {
       1: '09:00-09:50',
+      1.5: '09:50-10:00',
       2: '10:00-10:50',
+      2.5: '10:50-11:00',
       3: '11:00-11:50',
+      3.5: '11:50-12:00',
       4: '12:00-12:50',
+      4.5: '12:50-14:00',
       5: '14:00-14:50',
+      5.5: '14:50-15:00',
       6: '15:00-15:50',
+      6.5: '15:50-16:00',
       7: '16:00-16:50',
+      7.5: '16:50-17:00',
       8: '17:00-17:50'
     };
     return timeMap[period] || `${period}교시`;
@@ -58,7 +65,7 @@ export const ScheduleResultCard: React.FC<ScheduleResultCardProps> = ({
   }
 
   const days = schedulerType === 'MWF' ? ['월', '수', '금'] : ['화', '목'];
-  const periods = [1, 2, 3, 4, 5, 6, 7, 8];
+  const periods = [1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5, 5.5, 6, 6.5, 7, 7.5, 8];
 
   // 통계 계산
   const getStats = () => {
@@ -133,7 +140,7 @@ export const ScheduleResultCard: React.FC<ScheduleResultCardProps> = ({
               <th className="text-left p-2 font-medium text-primary">요일</th>
               {periods.map(period => (
                 <th key={period} className="text-center p-2 font-medium text-primary min-w-[100px]">
-                  {period}교시
+                  {period % 1 === 0 ? `${period}교시` : `${Math.floor(period)}-${Math.ceil(period)}교시 사이`}
                   <div className="text-xs text-tertiary">{formatPeriodTime(period)}</div>
                 </th>
               ))}
@@ -177,14 +184,20 @@ export const ScheduleResultCard: React.FC<ScheduleResultCardProps> = ({
                               key={idx}
                               className={`
                                 px-2 py-1 rounded text-xs font-medium border
-                                ${getRoleColor(role)}
+                                ${isExam ? 'bg-gradient-to-r from-purple-100 to-pink-100 text-purple-800 border-purple-300 dark:from-purple-900 dark:to-pink-900 dark:text-purple-200 dark:border-purple-700' : getRoleColor(role)}
+                                ${isExam ? 'relative' : ''}
                               `}
                             >
+                              {isExam && (
+                                <div className="absolute -top-1 -right-1 text-purple-500">📝</div>
+                              )}
                               <div className="font-medium">{teacher}</div>
                               <div className="opacity-75">{getRoleLabel(role)}</div>
                               {classId && <div className="text-xs opacity-60">{classId}</div>}
                               {round && <div className="text-xs opacity-60">R{round}</div>}
-                              {isExam && <div className="text-xs opacity-60">시험</div>}
+                              {isExam && period % 1 !== 0 && (
+                                <div className="text-xs text-purple-600 font-bold">교시 사이</div>
+                              )}
                             </div>
                           );
                         })}

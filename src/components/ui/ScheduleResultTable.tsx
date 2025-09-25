@@ -99,7 +99,7 @@ export const ScheduleResultTable: React.FC<ScheduleResultTableProps> = ({
       Object.values(daySchedule).forEach(assignmentData => {
         if (Array.isArray(assignmentData)) {
           count += assignmentData.filter(assignment => assignment?.role === role).length;
-        } else if (assignmentData && assignmentData.role === role) {
+        } else if (assignmentData && typeof assignmentData === 'object' && 'role' in assignmentData && assignmentData.role === role) {
           count += 1;
         }
       });
@@ -182,7 +182,7 @@ export const ScheduleResultTable: React.FC<ScheduleResultTableProps> = ({
                   </div>
                 </td>
                 {days.map((day) => {
-                  const assignmentData = result[day]?.[period];
+                  const assignmentData = result[day]?.[period as keyof typeof result[typeof day]];
                   const isHovered = hoveredCell?.day === day && hoveredCell?.period === period;
                   
                   // Handle both single assignment and array of assignments

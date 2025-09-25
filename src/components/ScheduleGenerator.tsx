@@ -7,6 +7,7 @@ import { DAYS } from '../types/scheduler';
 import { createWeeklySchedule } from '../utils/scheduler';
 import { exportClassView, exportTeacherView, printSchedule } from '../utils/export';
 import { PerformanceMetricsPanel } from './PerformanceMetricsPanel';
+import '../styles/exam-schedule.css';
 
 interface ScheduleGeneratorProps {
   slot: SchedulerSlot | null;
@@ -135,13 +136,13 @@ export const ScheduleGenerator: React.FC<ScheduleGeneratorProps> = ({ slot, onSc
             <h3 className="font-semibold text-gray-800 mb-3">내보내기 및 인쇄</h3>
             <div className="flex flex-wrap gap-2">
               <button
-                onClick={() => exportClassView(scheduleResult, 'csv')}
+                onClick={() => exportClassView(scheduleResult, 'csv', slot.globalOptions.classNames)}
                 className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors text-sm"
               >
                 클래스별 CSV 내보내기
               </button>
               <button
-                onClick={() => exportClassView(scheduleResult, 'json')}
+                onClick={() => exportClassView(scheduleResult, 'json', slot.globalOptions.classNames)}
                 className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors text-sm"
               >
                 클래스별 JSON 내보내기
@@ -159,7 +160,7 @@ export const ScheduleGenerator: React.FC<ScheduleGeneratorProps> = ({ slot, onSc
                 교사별 JSON 내보내기
               </button>
               <button
-                onClick={() => printSchedule(scheduleResult, activeView)}
+                onClick={() => printSchedule(scheduleResult, activeView, slot.globalOptions.classNames)}
                 className="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors text-sm"
               >
                 현재 뷰 인쇄
@@ -210,26 +211,54 @@ const ClassView: React.FC<{ scheduleResult: ScheduleResult }> = ({ scheduleResul
                 <h4 className="font-medium text-gray-700 mb-2">{day}</h4>
                 <div className="space-y-1">
                   {(scheduleResult.classSummary[classId][day] || [])
-                    .sort((a, b) => a.period - b.period)
-                    .map((assignment, index) => (
-                      <div
-                        key={index}
-                        className={`text-sm p-2 rounded ${
-                          assignment.teacher === '(미배정)'
-                            ? 'bg-red-100 text-red-800'
-                            : assignment.role === 'EXAM'
-                            ? 'bg-purple-100 text-purple-800'
-                            : 'bg-gray-100 text-gray-800'
-                        }`}
-                      >
-                        <div className="font-medium">
-                          {assignment.period}교시 ({assignment.time})
+                    .sort((a, b) => {
+                      // 소수점 period를 고려한 정렬
+                      const periodA = Number(a.period);
+                      const periodB = Number(b.period);
+                      return periodA - periodB;
+                    })
+                    .map((assignment, index) => {
+                      // 시험시간인 경우 특별한 스타일링
+                      if (assignment.role === 'EXAM') {
+                        return (
+                          <div key={index} className="exam-period-card">
+                            <div className="exam-title">
+                              <span className="exam-icon">📝</span>
+                              시험시간
+                            </div>
+                            <div className="exam-time">
+                              {assignment.time}
+                              {assignment.period % 1 !== 0 && (
+                                <span className="text-purple-500 ml-1">
+                                  (교시 사이)
+                                </span>
+                              )}
+                            </div>
+                            <div className="exam-teacher">
+                              감독: {assignment.teacher}
+                            </div>
+                          </div>
+                        );
+                      }
+                      
+                      return (
+                        <div
+                          key={index}
+                          className={`text-sm p-2 rounded ${
+                            assignment.teacher === '(미배정)'
+                              ? 'bg-red-100 text-red-800'
+                              : 'bg-gray-100 text-gray-800'
+                          }`}
+                        >
+                          <div className="font-medium">
+                            {assignment.period % 1 === 0 ? `${assignment.period}교시` : `${Math.floor(assignment.period)}-${Math.ceil(assignment.period)}교시 사이`} ({assignment.time})
+                          </div>
+                          <div>
+                            {assignment.role} - {assignment.teacher}
+                          </div>
                         </div>
-                        <div>
-                          {assignment.role === 'EXAM' ? '시험' : assignment.role} - {assignment.teacher}
-                        </div>
-                      </div>
-                    ))}
+                      );
+                    })}
                 </div>
               </div>
             ))}
@@ -255,24 +284,50 @@ const TeacherView: React.FC<{ scheduleResult: ScheduleResult }> = ({ scheduleRes
                 <h4 className="font-medium text-gray-700 mb-2">{day}</h4>
                 <div className="space-y-1">
                   {(scheduleResult.teacherSummary[teacher][day] || [])
-                    .sort((a, b) => a.period - b.period)
-                    .map((assignment, index) => (
-                      <div
-                        key={index}
-                        className={`text-sm p-2 rounded ${
-                          assignment.role === 'EXAM'
-                            ? 'bg-purple-100 text-purple-800'
-                            : 'bg-blue-100 text-blue-800'
-                        }`}
-                      >
-                        <div className="font-medium">
-                          {assignment.period}교시 ({assignment.time})
+                    .sort((a, b) => {
+                      // 소수점 period를 고려한 정렬
+                      const periodA = Number(a.period);
+                      const periodB = Number(b.period);
+                      return periodA - periodB;
+                    })
+                    .map((assignment, index) => {
+                      // 시험시간인 경우 특별한 스타일링
+                      if (assignment.role === 'EXAM') {
+                        return (
+                          <div key={index} className="exam-period-card">
+                            <div className="exam-title">
+                              <span className="exam-icon">📝</span>
+                              시험감독
+                            </div>
+                            <div className="exam-time">
+                              {assignment.time}
+                              {assignment.period % 1 !== 0 && (
+                                <span className="text-purple-500 ml-1">
+                                  (교시 사이)
+                                </span>
+                              )}
+                            </div>
+                            <div className="exam-teacher">
+                              {assignment.classId}
+                            </div>
+                          </div>
+                        );
+                      }
+                      
+                      return (
+                        <div
+                          key={index}
+                          className="text-sm p-2 rounded bg-blue-100 text-blue-800"
+                        >
+                          <div className="font-medium">
+                            {assignment.period % 1 === 0 ? `${assignment.period}교시` : `${Math.floor(assignment.period)}-${Math.ceil(assignment.period)}교시 사이`} ({assignment.time})
+                          </div>
+                          <div>
+                            {assignment.classId} - {assignment.role}
+                          </div>
                         </div>
-                        <div>
-                          {assignment.classId} - {assignment.role === 'EXAM' ? '시험' : assignment.role}
-                        </div>
-                      </div>
-                    ))}
+                      );
+                    })}
                 </div>
               </div>
             ))}
@@ -291,28 +346,53 @@ const DayView: React.FC<{ scheduleResult: ScheduleResult }> = ({ scheduleResult 
         <div key={day} className="border border-gray-200 rounded-lg p-4">
           <h3 className="font-semibold text-gray-800 mb-4">{day}</h3>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-            {([1, 2, 3, 4, 5, 6, 7, 8] as const).map((period) => (
+            {([1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5, 5.5, 6, 6.5, 7, 7.5, 8] as const).map((period) => (
               <div key={period}>
-                <h4 className="font-medium text-gray-700 mb-2">{period}교시</h4>
+                <h4 className="font-medium text-gray-700 mb-2">
+                  {period % 1 === 0 ? `${period}교시` : `${Math.floor(period)}-${Math.ceil(period)}교시 사이`}
+                </h4>
                 <div className="space-y-1">
                   {(scheduleResult.dayGrid[day][period] || [])
-                    .map((assignment, index) => (
-                      <div
-                        key={index}
-                        className={`text-sm p-2 rounded ${
-                          assignment.teacher === '(미배정)'
-                            ? 'bg-red-100 text-red-800'
-                            : assignment.role === 'EXAM'
-                            ? 'bg-purple-100 text-purple-800'
-                            : 'bg-green-100 text-green-800'
-                        }`}
-                      >
-                        <div className="font-medium">{assignment.classId}</div>
-                        <div>
-                          {assignment.role === 'EXAM' ? '시험' : assignment.role} - {assignment.teacher}
+                    .map((assignment, index) => {
+                      // 시험시간인 경우 특별한 스타일링
+                      if (assignment.role === 'EXAM') {
+                        return (
+                          <div key={index} className="exam-period-card">
+                            <div className="exam-title">
+                              <span className="exam-icon">📝</span>
+                              시험시간
+                            </div>
+                            <div className="exam-time">
+                              {assignment.classId}
+                              {assignment.period % 1 !== 0 && (
+                                <span className="text-purple-500 ml-1">
+                                  (교시 사이)
+                                </span>
+                              )}
+                            </div>
+                            <div className="exam-teacher">
+                              감독: {assignment.teacher}
+                            </div>
+                          </div>
+                        );
+                      }
+                      
+                      return (
+                        <div
+                          key={index}
+                          className={`text-sm p-2 rounded ${
+                            assignment.teacher === '(미배정)'
+                              ? 'bg-red-100 text-red-800'
+                              : 'bg-green-100 text-green-800'
+                          }`}
+                        >
+                          <div className="font-medium">{assignment.classId}</div>
+                          <div>
+                            {assignment.role} - {assignment.teacher}
+                          </div>
                         </div>
-                      </div>
-                    ))}
+                      );
+                    })}
                 </div>
               </div>
             ))}

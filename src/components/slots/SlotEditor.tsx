@@ -134,7 +134,142 @@ export function SlotEditor({ slot, onSlotUpdate, onClose }: SlotEditorProps) {
   ] as const
 
   return (
-    <div className="space-y-6">
+    <div className="constraints-page app-container space-y-6" data-ui="constraints-v2">
+      {/* 1단계: 적용 확인용 강제 스타일(눈에 띄게) */}
+      <style id="constraints-hotfix">
+        {`
+          [data-ui="constraints-v2"] { outline: 3px solid magenta !important; }
+          [data-ui="constraints-v2"] .probe { background: magenta; color:black; padding:4px 8px; border-radius:6px; display:inline-block; }
+        `}
+      </style>
+      
+      {/* HOTFIX 확인용 엘리먼트 */}
+      <span className="probe">HOTFIX ACTIVE</span>
+      
+      {/* 2단계: 최종 스타일(강제 적용) */}
+      <style id="constraints-v2-styles">
+        {`
+          :root {
+            --bg: #121212;
+            --card: #1e1e1e;
+            --input: #2a2a2a;
+            --text: #e6e6e6;
+            --subtext: #a9a9a9;
+            --border: #2e2e2e;
+            --primary: #4dabf7;
+          }
+
+          /* 페이지 컨테이너: 가운데 정렬 + 최대폭 */
+          [data-ui="constraints-v2"] {
+            max-width: 1100px;
+            margin: 0 auto !important;
+            padding: 16px 20px;
+          }
+
+          /* 상단 탭 버튼 정렬/스타일 (role/tablist 탐지 + 클래스 동시 대응) */
+          [data-ui="constraints-v2"] nav[role="tablist"],
+          [data-ui="constraints-v2"] .top-actions {
+            display: flex; justify-content: center; align-items: center;
+            gap: 8px; row-gap: 10px; flex-wrap: wrap;
+            margin: 12px 0 22px;
+          }
+          [data-ui="constraints-v2"] nav[role="tablist"] > *,
+          [data-ui="constraints-v2"] .top-actions > * {
+            min-width: 140px; height: 40px; padding: 0 14px;
+            border-radius: 10px; border: 1px solid var(--border);
+            background: var(--card); color: var(--text);
+          }
+          [data-ui="constraints-v2"] [aria-selected="true"],
+          [data-ui="constraints-v2"] .active {
+            background: var(--primary) !important; color: #0b0f14 !important; border-color: transparent !important;
+            box-shadow: 0 0 0 2px rgba(77,171,247,.2);
+          }
+
+          /* 섹션 카드 */
+          [data-ui="constraints-v2"] .section-card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            box-shadow: 0 8px 26px rgba(0,0,0,.35);
+            padding: 22px;
+            margin: 24px 0;
+          }
+
+          /* 설명 텍스트 */
+          [data-ui="constraints-v2"] .section-card h2,
+          [data-ui="constraints-v2"] .section-card h3 { margin: 0 0 6px; color: var(--text); }
+          [data-ui="constraints-v2"] .desc { margin-bottom: 16px; color: var(--subtext); font-size: .95rem; }
+
+          /* 드롭다운 + 버튼 한 줄 정렬 */
+          [data-ui="constraints-v2"] .control-row {
+            display: flex; gap: 10px; align-items: center; flex-wrap: wrap;
+            margin-bottom: 14px;
+          }
+          [data-ui="constraints-v2"] select,
+          [data-ui="constraints-v2"] input[type="text"],
+          [data-ui="constraints-v2"] input[type="number"],
+          [data-ui="constraints-v2"] .btn {
+            background: var(--input); color: var(--text);
+            border: 1px solid var(--border); border-radius: 10px;
+            height: 40px; padding: 0 12px;
+          }
+          [data-ui="constraints-v2"] .btn.primary {
+            background: var(--primary); color: #0b0f14; border-color: transparent;
+          }
+
+          /* 개별 제약 카드 */
+          [data-ui="constraints-v2"] .constraint-card {
+            background: #141414; border: 1px solid var(--border);
+            border-radius: 12px; padding: 18px; margin-top: 12px;
+          }
+          [data-ui="constraints-v2"] .constraint-card .card-head {
+            display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;
+          }
+          [data-ui="constraints-v2"] .constraint-card .card-head .name { font-weight: 700; font-size: 1.05rem; }
+          [data-ui="constraints-v2"] .constraint-card .card-head .remove {
+            background: #262626; color: var(--text);
+            border: 1px solid var(--border); border-radius: 8px;
+            height: 32px; padding: 0 10px; cursor: pointer;
+          }
+          [data-ui="constraints-v2"] .constraint-card .card-head .remove:hover { background: #312f2f; }
+
+          /* 라벨/필드 정렬 */
+          [data-ui="constraints-v2"] .field-row {
+            display: grid; grid-template-columns: 220px 1fr; gap: 10px; align-items: center;
+            margin: 8px 0;
+          }
+          [data-ui="constraints-v2"] .field-row label { color: var(--subtext); }
+
+          /* 시간표 그리드 */
+          [data-ui="constraints-v2"] .time-grid { margin-top: 16px; overflow-x: auto; border-top: 1px dashed var(--border); padding-top: 12px; }
+          [data-ui="constraints-v2"] .time-grid table { width: 100%; border-collapse: separate; border-spacing: 8px; }
+          [data-ui="constraints-v2"] .time-grid thead th { text-align: center; color: var(--subtext); font-weight: 600; }
+          [data-ui="constraints-v2"] .time-grid tbody td { text-align: center; }
+
+          /* 토글형 셀 */
+          [data-ui="constraints-v2"] .time-cell {
+            min-width: 88px; min-height: 40px;
+            display: inline-grid; place-items: center;
+            background: #1f1f1f; border: 1px solid var(--border); border-radius: 8px;
+            user-select: none; cursor: pointer; transition: transform .02s ease, background .15s ease;
+          }
+          [data-ui="constraints-v2"] .time-cell:hover { background: #262626; }
+          [data-ui="constraints-v2"] .time-cell.is-selected {
+            background: var(--primary); color: #0b0f14; border-color: transparent;
+            box-shadow: 0 0 0 2px rgba(77,171,247,.2);
+          }
+
+          /* 하단 액션 */
+          [data-ui="constraints-v2"] .footer-actions {
+            display: flex; justify-content: center; margin-top: 16px;
+          }
+
+          @media (max-width: 720px) {
+            [data-ui="constraints-v2"] .field-row { grid-template-columns: 1fr; }
+          }
+        `}
+      </style>
+      
       {/* Header */}
       <div className="flex justify-between items-center">
         <div>
@@ -144,6 +279,7 @@ export function SlotEditor({ slot, onSlotUpdate, onClose }: SlotEditorProps) {
           <p className="text-gray-600">
             {currentSlot.dayGroup} 스케줄 설정
           </p>
+          <span className="probe">HOTFIX ACTIVE</span>
         </div>
         {onClose && (
           <button
@@ -220,8 +356,6 @@ export function SlotEditor({ slot, onSlotUpdate, onClose }: SlotEditorProps) {
               constraints={currentSlot.teacherConstraints}
               teachers={currentSlot.teachers as any}
               onUpdate={(teacherConstraints) => updateSlotData({ teacherConstraints })}
-              onSave={() => handleSave('교사 제약')}
-              isSaving={isSaving}
             />
           )}
         </LazyTab>

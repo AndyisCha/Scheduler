@@ -73,11 +73,11 @@ export function SlotEditPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-900">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div className="min-h-screen" style={{backgroundColor: 'var(--bg-primary)'}}>
+      <div className="app-container py-8">
         {/* Header */}
         <div className="mb-8">
-          <div className="bg-gray-800 rounded-xl shadow-sm border border-gray-700 p-6">
+          <div className="card">
             <div className="flex items-center justify-between">
               <div className="flex-1">
                 <nav className="flex items-center space-x-2 mb-4" aria-label="Breadcrumb">
@@ -125,30 +125,22 @@ export function SlotEditPage() {
         </div>
 
         {/* Tabs */}
-        <div className="mb-8">
-          <div className="bg-gray-800 rounded-xl shadow-sm border border-gray-700 p-1">
-            <nav className="flex space-x-1">
-              {tabs.map((tab) => (
-                <button
-                  key={tab.id}
-                  onClick={() => setActiveTab(tab.id)}
-                  className={`${
-                    activeTab === tab.id
-                      ? 'bg-blue-600 text-white border-blue-500'
-                      : 'text-gray-400 hover:text-white hover:bg-gray-700 border-transparent'
-                  } flex items-center px-4 py-3 text-sm font-medium rounded-lg border transition-all duration-200`}
-                >
-                  <span className="mr-2 text-base">{tab.icon}</span>
-                  <span>{tab.name}</span>
-                </button>
-              ))}
-            </nav>
-          </div>
+        <div className="top-actions">
+          {tabs.map((tab) => (
+            <button
+              key={tab.id}
+              onClick={() => setActiveTab(tab.id)}
+              className={`tab-button ${activeTab === tab.id ? 'active' : ''}`}
+            >
+              <span className="tab-icon">{tab.icon}</span>
+              <span>{tab.name}</span>
+            </button>
+          ))}
         </div>
 
         {/* Tab Content */}
-        <div className="bg-gray-800 rounded-xl shadow-sm border border-gray-700 min-h-[600px]">
-          <div className="p-6">
+        <div className="card min-h-[600px]">
+          <div>
             {activeTab === 'teachers' && (
               <TeachersTab slotId={id!} slotConfig={slotConfig} onUpdate={setSlotConfig} />
             )}

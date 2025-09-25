@@ -1,0 +1,130 @@
+:root {
+  --bg: #121212;
+  --card: #1e1e1e;
+  --input: #2a2a2a;
+  --text: #e6e6e6;
+  --subtext: #a9a9a9;
+  --border: #2e2e2e;
+  --primary: #4dabf7;
+}
+
+/* 페이지 컨테이너 중앙 정렬 + 최대 폭 */
+body .constraints-page.app-container {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 16px 20px;
+}
+
+/* 상단 탭 버튼 그룹 통일 */
+body .constraints-page .top-actions,
+body .constraints-page nav[role="tablist"] {
+  display: flex; justify-content: center; align-items: center;
+  flex-wrap: wrap; gap: 8px; row-gap: 10px; margin: 12px 0 22px;
+}
+body .constraints-page .top-actions > *[role="tab"],
+body .constraints-page nav[role="tablist"] > * {
+  min-width: 140px; height: 40px; padding: 0 14px;
+  border-radius: 10px; border: 1px solid var(--border);
+  background: var(--card); color: var(--text);
+}
+body .constraints-page .top-actions > *[aria-selected="true"],
+body .constraints-page nav[role="tablist"] > *[aria-selected="true"],
+body .constraints-page .top-actions .active,
+body .constraints-page .active-tab {
+  background: var(--primary); color: #0b0f14; border-color: transparent;
+  box-shadow: 0 0 0 2px rgba(77,171,247,.2);
+}
+
+/* 섹션 카드 */
+body .constraints-page .section-card,
+body .constraints-page section.constraints-section {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  box-shadow: 0 8px 26px rgba(0,0,0,.35);
+  padding: 22px;
+  margin: 24px 0;
+}
+
+/* 헤더/설명 텍스트 정리 */
+body .constraints-page .section-card h2,
+body .constraints-page .section-card h3 {
+  margin: 0 0 6px; color: var(--text);
+}
+body .constraints-page .section-card .desc {
+  margin-bottom: 16px; color: var(--subtext); font-size: .95rem;
+}
+
+/* 드롭다운 + 버튼 한 줄 정렬 */
+body .constraints-page .control-row {
+  display: flex; gap: 10px; align-items: center; flex-wrap: wrap;
+  margin-bottom: 14px;
+}
+body .constraints-page select,
+body .constraints-page input[type="text"],
+body .constraints-page .btn {
+  background: var(--input); color: var(--text);
+  border: 1px solid var(--border); border-radius: 10px;
+  height: 40px; padding: 0 12px;
+}
+body .constraints-page .btn.primary {
+  background: var(--primary); color: #0b0f14; border-color: transparent;
+}
+
+/* 제약 카드 헤더 */
+body .constraints-page .constraint-card {
+  background: #141414; border: 1px solid var(--border);
+  border-radius: 12px; padding: 18px; margin-top: 12px;
+}
+body .constraints-page .constraint-card .card-head {
+  display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;
+}
+body .constraints-page .constraint-card .card-head .name { font-weight: 700; font-size: 1.05rem; }
+body .constraints-page .constraint-card .card-head .remove {
+  background: #262626; color: var(--text); border: 1px solid var(--border);
+  border-radius: 8px; height: 32px; padding: 0 10px; cursor: pointer;
+}
+body .constraints-page .constraint-card .card-head .remove:hover { background: #312f2f; }
+
+/* 라벨/필드 정렬 */
+body .constraints-page .field-row {
+  display: grid; grid-template-columns: 220px 1fr; gap: 10px; align-items: center;
+  margin: 8px 0;
+}
+body .constraints-page .field-row label { color: var(--subtext); }
+
+/* 시간표 테이블 영역 */
+body .constraints-page .time-grid {
+  margin-top: 16px; overflow-x: auto; border-top: 1px dashed var(--border); padding-top: 12px;
+}
+body .constraints-page .time-grid table {
+  width: 100%; border-collapse: separate; border-spacing: 8px;
+}
+body .constraints-page .time-grid thead th {
+  text-align: center; color: var(--subtext); font-weight: 600;
+}
+body .constraints-page .time-grid tbody td {
+  text-align: center;
+}
+
+/* 토글 가능한 버튼 셀 (클릭영역 크게) */
+body .constraints-page .time-cell {
+  min-width: 88px; min-height: 40px;
+  display: inline-grid; place-items: center;
+  background: #1f1f1f; border: 1px solid var(--border); border-radius: 8px;
+  user-select: none; cursor: pointer; transition: transform .02s ease, background .15s ease;
+}
+body .constraints-page .time-cell:hover { background: #262626; }
+body .constraints-page .time-cell.is-selected {
+  background: var(--primary); color: #0b0f14; border-color: transparent;
+  box-shadow: 0 0 0 2px rgba(77,171,247,.2);
+}
+
+/* 하단 액션 버튼 중앙 정렬 */
+body .constraints-page .section-card .footer-actions {
+  display: flex; justify-content: center; margin-top: 16px;
+}
+
+@media (max-width: 720px) {
+  body .constraints-page .field-row { grid-template-columns: 1fr; }
+}

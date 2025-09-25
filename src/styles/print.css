@@ -487,4 +487,55 @@
   .print-underline {
     text-decoration: underline !important;
   }
+
+  /* 시험시간 특별 스타일 */
+  .print-assignment.exam {
+    background-color: #f3e8ff !important;
+    border: 2px solid #c084fc !important;
+    border-radius: 6px !important;
+    margin: 8px 0 !important;
+    padding: 8px !important;
+    position: relative !important;
+    page-break-inside: avoid !important;
+  }
+  
+  .print-assignment.exam::before {
+    content: '📝 시험시간';
+    display: block;
+    font-weight: 600 !important;
+    color: #6b21a8 !important;
+    margin-bottom: 4px !important;
+    font-size: 11pt !important;
+  }
+  
+  .print-assignment.exam::after {
+    content: '';
+    position: absolute;
+    top: -4px;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent 0%, #c084fc 20%, #a855f7 50%, #c084fc 80%, transparent 100%) !important;
+  }
+  
+  /* 교시 사이 시험시간 구분선 */
+  .exam-between-periods {
+    border-top: 2px dashed #c084fc !important;
+    border-bottom: 2px dashed #c084fc !important;
+    margin: 12px 0 !important;
+    padding: 8px 0 !important;
+    position: relative !important;
+  }
+  
+  .exam-between-periods::before {
+    content: '시험시간';
+    position: absolute;
+    top: -8px;
+    left: 20px;
+    background: white !important;
+    padding: 0 8px;
+    font-size: 10pt !important;
+    font-weight: 600 !important;
+    color: #7c3aed !important;
+  }
 }

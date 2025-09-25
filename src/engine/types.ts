@@ -1,6 +1,6 @@
 // Engine 타입 정의
 export type Day = '월' | '화' | '수' | '목' | '금';
-export type Period = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8;
+export type Period = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 1.5 | 2.5 | 3.5 | 4.5 | 5.5 | 6.5 | 7.5;
 export type Role = 'H' | 'K' | 'F';
 export type Teacher = string;
 

@@ -73,15 +73,21 @@ class UnifiedSlotService {
 
   async getSlotsByDayGroup(dayGroup: 'MWF' | 'TT', userId: string, userRole: 'ADMIN' | 'SUPER_ADMIN'): Promise<UnifiedSlotConfig[]> {
     if (isSupabaseConfigured()) {
-      const scope = userRole === 'SUPER_ADMIN' ? 'all' : 'mine'
-      const slotList = await dbSlotService.listSlots(scope, userId)
-      // Convert SlotListItem to UnifiedSlotConfig by fetching full config
-      const configs = await Promise.all(
-        slotList
-          .filter(slot => slot.dayGroup === dayGroup)
-          .map(slot => dbSlotService.getSlotConfig(slot.id))
-      )
-      return configs
+      const slotConfigs = await dbSlotService.getSlotsByDayGroup(dayGroup, userId, userRole)
+      // Convert SlotConfig to UnifiedSlotConfig
+      return slotConfigs.map(slot => ({
+        id: slot.id,
+        name: slot.name,
+        description: slot.description,
+        dayGroup: slot.dayGroup,
+        createdAt: slot.createdAt,
+        updatedAt: slot.updatedAt,
+        createdBy: slot.createdBy,
+        teachers: slot.teachers,
+        teacherConstraints: slot.teacherConstraints,
+        fixedHomerooms: slot.fixedHomerooms,
+        globalOptions: slot.globalOptions
+      }))
     } else {
       // Fall back to mock service
       return await mockSlotService.getSlotsByDayGroup(dayGroup, userId, userRole)

@@ -32,15 +32,26 @@ export interface SlotConfig {
 
 export interface GeneratedSchedule {
   id: string
-  slotId: string
-  dayGroup: 'MWF' | 'TT'
-  result: UnifiedWeekResult | any
+  slot_id: string
+  day_group: 'MWF' | 'TT'
+  created_by: string
+  created_at: string
+  generation_batch_id?: string
+  result: {
+    mwf: any
+    tt: any
+    validation: {
+      isValid: boolean
+      errors: string[]
+      warnings: string[]
+      infos: string[]
+    }
+  }
   warnings: string[]
-  reports: any
-  generationBatchId: string
-  createdAt: string
-  expiresAt: string
-  userId: string
+  algorithm_version?: string
+  teacher_consistency_metrics?: any
+  round_statistics?: any
+  validation_details?: any
 }
 
 // Mock DB implementation (replace with actual DB calls)
@@ -179,14 +190,40 @@ class MockSlotService {
     // Simulate network delay
     await new Promise(resolve => setTimeout(resolve, 50))
 
-    let filteredSlots = this.slots.filter(s => s.dayGroup === dayGroup)
+    console.log('🔍 Mock getSlotsByDayGroup called with:', {
+      dayGroup,
+      userId,
+      userRole,
+      totalSlots: this.slots.length
+    });
 
-    // RLS check
+    let filteredSlots = this.slots.filter(s => s.dayGroup === dayGroup)
+    console.log('📦 Slots filtered by dayGroup:', filteredSlots.length, filteredSlots.map(s => ({ id: s.id, name: s.name, userId: s.userId })));
+
+    // RLS check - 임시로 모든 슬롯 표시
     if (userRole === 'ADMIN') {
-      filteredSlots = filteredSlots.filter(s => s.userId === userId)
+      const beforeCount = filteredSlots.length;
+      // 임시로 RLS 필터링 비활성화 - 모든 슬롯 표시
+      // filteredSlots = filteredSlots.filter(s => s.userId === userId)
+      console.log('🔒 After RLS filtering (ADMIN) - DISABLED FOR DEBUG:', beforeCount, '->', filteredSlots.length);
+    } else {
+      console.log('🔓 SUPER_ADMIN - no RLS filtering applied');
     }
 
+    console.log('✅ Returning slots:', filteredSlots.length, filteredSlots.map(s => ({ id: s.id, name: s.name })));
     return filteredSlots
+  }
+
+  async deleteSlot(slotId: string): Promise<void> {
+    // Simulate network delay
+    await new Promise(resolve => setTimeout(resolve, 100))
+    
+    console.log('🗑️ Mock deleteSlot called with:', slotId)
+    
+    const initialLength = this.slots.length
+    this.slots = this.slots.filter(slot => slot.id !== slotId)
+    
+    console.log('✅ Mock slot deleted:', slotId, 'slots:', initialLength, '->', this.slots.length)
   }
 
   async saveGeneratedSchedule(

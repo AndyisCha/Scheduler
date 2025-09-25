@@ -8,15 +8,16 @@ export interface ExportOptions {
   includeExams?: boolean;
   includeUnassigned?: boolean;
   format: 'csv' | 'json';
+  classNames?: Record<string, string>; // 클래스 ID -> 반이름 매핑
 }
 
 export function exportScheduleToCSV(scheduleResult: ScheduleResult | Partial<ScheduleResult>, options: ExportOptions = { format: 'csv' }): string {
-  const { includeExams = true, includeUnassigned = true } = options;
+  const { includeExams = true, includeUnassigned = true, classNames = {} } = options;
   
   const rows: string[] = [];
   
   // Header
-  rows.push('Class,Day,Period,Time,Role,Teacher,Round');
+  rows.push('Class,ClassName,Day,Period,Time,Role,Teacher,Round');
   
   // Class view data
   Object.entries(scheduleResult.classSummary || {}).forEach(([classId, classSchedule]) => {
@@ -28,6 +29,7 @@ export function exportScheduleToCSV(scheduleResult: ScheduleResult | Partial<Sch
         
         rows.push([
           classId,
+          classNames[classId] || classId, // 반이름 또는 기본 클래스 ID
           day,
           assignment.period,
           assignment.time,
@@ -43,13 +45,14 @@ export function exportScheduleToCSV(scheduleResult: ScheduleResult | Partial<Sch
 }
 
 export function exportScheduleToJSON(scheduleResult: ScheduleResult | Partial<ScheduleResult>, options: ExportOptions = { format: 'json' }): string {
-  const { includeExams = true, includeUnassigned = true } = options;
+  const { includeExams = true, includeUnassigned = true, classNames = {} } = options;
   
   const filteredResult: any = {
     classSummary: {},
     teacherSummary: {},
     dayGrid: {},
-    warnings: scheduleResult.warnings
+    warnings: scheduleResult.warnings,
+    classNames: classNames // 반이름 매핑 추가
   };
   
   // Filter class summary
@@ -116,7 +119,7 @@ export function downloadFile(content: string, filename: string, mimeType: string
   URL.revokeObjectURL(url);
 }
 
-export function exportClassView(scheduleResult: ScheduleResult, format: 'csv' | 'json'): void {
+export function exportClassView(scheduleResult: ScheduleResult, format: 'csv' | 'json', classNames?: Record<string, string>): void {
   const timestamp = new Date().toISOString().slice(0, 19).replace(/:/g, '-');
   const filename = `class-schedule-${timestamp}.${format}`;
   
@@ -124,10 +127,10 @@ export function exportClassView(scheduleResult: ScheduleResult, format: 'csv' | 
   let mimeType: string;
   
   if (format === 'csv') {
-    content = exportScheduleToCSV(scheduleResult, { format });
+    content = exportScheduleToCSV(scheduleResult, { format, classNames });
     mimeType = 'text/csv';
   } else {
-    content = exportScheduleToJSON(scheduleResult, { format });
+    content = exportScheduleToJSON(scheduleResult, { format, classNames });
     mimeType = 'application/json';
   }
   
@@ -169,12 +172,12 @@ export function exportTeacherView(scheduleResult: ScheduleResult, format: 'csv' 
   downloadFile(content, filename, mimeType);
 }
 
-export function printSchedule(scheduleResult: ScheduleResult, view: 'class' | 'teacher' | 'day'): void {
+export function printSchedule(scheduleResult: ScheduleResult, view: 'class' | 'teacher' | 'day', classNames?: Record<string, string>): void {
   // Create a print-friendly version
   const printWindow = window.open('', '_blank');
   if (!printWindow) return;
   
-  const printContent = generatePrintContent(scheduleResult, view);
+  const printContent = generatePrintContent(scheduleResult, view, classNames);
   
   printWindow.document.write(`
     <!DOCTYPE html>
@@ -210,7 +213,7 @@ export function printSchedule(scheduleResult: ScheduleResult, view: 'class' | 't
   }, 100);
 }
 
-function generatePrintContent(scheduleResult: ScheduleResult, view: 'class' | 'teacher' | 'day'): string {
+function generatePrintContent(scheduleResult: ScheduleResult, view: 'class' | 'teacher' | 'day', classNames?: Record<string, string>): string {
   const timestamp = new Date().toLocaleDateString('ko-KR');
   
   let content = `
@@ -234,25 +237,25 @@ function generatePrintContent(scheduleResult: ScheduleResult, view: 'class' | 't
   }
   
   if (view === 'class') {
-    content += generateClassPrintContent(scheduleResult);
+    content += generateClassPrintContent(scheduleResult, classNames);
   } else if (view === 'teacher') {
-    content += generateTeacherPrintContent(scheduleResult);
+    content += generateTeacherPrintContent(scheduleResult, classNames);
   } else {
-    content += generateDayPrintContent(scheduleResult);
+    content += generateDayPrintContent(scheduleResult, classNames);
   }
   
   content += '</div>';
   return content;
 }
 
-function generateClassPrintContent(scheduleResult: ScheduleResult): string {
+function generateClassPrintContent(scheduleResult: ScheduleResult, classNames?: Record<string, string>): string {
   const classes = Object.keys(scheduleResult.classSummary).sort();
   
   let content = '';
   classes.forEach(classId => {
     content += `
       <div class="print-section page-break-inside-avoid">
-        <h2 class="print-section-title">${classId}</h2>
+        <h2 class="print-section-title">${classNames?.[classId] || classId}</h2>
         <table class="print-table">
           <thead>
             <tr>
@@ -295,7 +298,7 @@ function generateClassPrintContent(scheduleResult: ScheduleResult): string {
   return content;
 }
 
-function generateTeacherPrintContent(scheduleResult: ScheduleResult): string {
+function generateTeacherPrintContent(scheduleResult: ScheduleResult, classNames?: Record<string, string>): string {
   const teachers = Object.keys(scheduleResult.teacherSummary).sort();
   
   let content = '';
@@ -326,7 +329,7 @@ function generateTeacherPrintContent(scheduleResult: ScheduleResult): string {
             <td>${day}</td>
             <td class="center">${assignment.period}</td>
             <td>${assignment.time}</td>
-            <td>${assignment.classId}</td>
+            <td>${classNames?.[assignment.classId] || assignment.classId}</td>
             <td class="center print-assignment ${roleClass}">${assignment.role === 'EXAM' ? '시험' : assignment.role}</td>
             <td class="center">${assignment.round}</td>
           </tr>
@@ -344,7 +347,7 @@ function generateTeacherPrintContent(scheduleResult: ScheduleResult): string {
   return content;
 }
 
-function generateDayPrintContent(scheduleResult: ScheduleResult): string {
+function generateDayPrintContent(scheduleResult: ScheduleResult, classNames?: Record<string, string>): string {
   let content = '';
   
   DAYS.forEach(day => {
@@ -374,7 +377,7 @@ function generateDayPrintContent(scheduleResult: ScheduleResult): string {
           <tr>
             <td class="center">${period}</td>
             <td>${assignment.time}</td>
-            <td>${assignment.classId}</td>
+            <td>${classNames?.[assignment.classId] || assignment.classId}</td>
             <td class="center">${assignment.role === 'EXAM' ? '시험' : assignment.role}</td>
             <td class="print-assignment ${roleClass}">${assignment.teacher}</td>
             <td class="center">${assignment.round}</td>

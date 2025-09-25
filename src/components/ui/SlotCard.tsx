@@ -1,21 +1,24 @@
-import React from 'react';
+import React, { memo } from 'react';
 import { Card } from './Card';
 import type { SlotConfig } from '../../engine/types';
+import type { UnifiedSlotConfig } from '../../services/unifiedSlotService';
 
 interface SlotCardProps {
-  slot: SlotConfig;
+  slot: SlotConfig | UnifiedSlotConfig;
   onEdit: (slotId: string) => void;
   onDelete: (slotId: string) => void;
   isActive?: boolean;
 }
 
-export const SlotCard: React.FC<SlotCardProps> = ({
+const SlotCardComponent: React.FC<SlotCardProps> = ({
   slot,
   onEdit,
   onDelete,
   isActive = false
 }) => {
   // const { t } = useTranslation();
+  
+  console.log('🎴 SlotCard rendered for:', slot.name, 'isActive:', isActive);
 
   const formatDate = (dateString?: string) => {
     if (!dateString) return 'N/A';
@@ -26,6 +29,26 @@ export const SlotCard: React.FC<SlotCardProps> = ({
       hour: '2-digit',
       minute: '2-digit'
     });
+  };
+
+  // UnifiedSlotConfig와 SlotConfig 모두 지원하기 위한 헬퍼 함수들
+  const getTeachers = () => {
+    if ('teachers' in slot) {
+      console.log('📋 SlotCard - Using direct teachers:', slot.teachers);
+      return slot.teachers;
+    }
+    // SlotConfig의 경우 slot_data.teachers 사용
+    const slotDataTeachers = (slot as any).slot_data?.teachers || { homeroomKoreanPool: [], foreignPool: [] };
+    console.log('📋 SlotCard - Using slot_data.teachers:', slotDataTeachers);
+    return slotDataTeachers;
+  };
+
+  const getCreatedAt = () => {
+    return slot.createdAt || (slot as any).created_at;
+  };
+
+  const getUpdatedAt = () => {
+    return slot.updatedAt || (slot as any).updated_at;
   };
 
   return (
@@ -62,21 +85,43 @@ export const SlotCard: React.FC<SlotCardProps> = ({
           <span>요일 그룹:</span>
           <span className="font-medium">{slot.dayGroup}</span>
         </div>
-        <div className="flex justify-between">
+        <div className="flex justify-between items-center">
           <span>한국어 교사:</span>
-          <span className="font-medium">{slot.teachers.homeroomKoreanPool.length}명</span>
+          <span className="font-medium px-2 py-1 rounded-full text-sm" style={{
+            backgroundColor: '#e3f2fd',
+            color: '#1976d2',
+            border: '1px solid #bbdefb'
+          }}>
+            {(() => {
+              const teachers = getTeachers();
+              const count = teachers.homeroomKoreanPool?.length || 0;
+              console.log('📋 SlotCard - Homeroom Korean count:', count, 'teachers:', teachers.homeroomKoreanPool);
+              return `${count}명`;
+            })()}
+          </span>
         </div>
-        <div className="flex justify-between">
+        <div className="flex justify-between items-center">
           <span>외국어 교사:</span>
-          <span className="font-medium">{slot.teachers.foreignPool.length}명</span>
+          <span className="font-medium px-2 py-1 rounded-full text-sm" style={{
+            backgroundColor: '#e8f5e8',
+            color: '#2e7d32',
+            border: '1px solid #c8e6c9'
+          }}>
+            {(() => {
+              const teachers = getTeachers();
+              const count = teachers.foreignPool?.length || 0;
+              console.log('📋 SlotCard - Foreign count:', count, 'teachers:', teachers.foreignPool);
+              return `${count}명`;
+            })()}
+          </span>
         </div>
         <div className="flex justify-between">
           <span>생성일:</span>
-          <span>{formatDate(slot.createdAt)}</span>
+          <span>{formatDate(getCreatedAt())}</span>
         </div>
         <div className="flex justify-between">
           <span>수정일:</span>
-          <span>{formatDate(slot.updatedAt)}</span>
+          <span>{formatDate(getUpdatedAt())}</span>
         </div>
       </div>
 
@@ -90,5 +135,7 @@ export const SlotCard: React.FC<SlotCardProps> = ({
     </Card>
   );
 };
+
+export const SlotCard = memo(SlotCardComponent);
 
 

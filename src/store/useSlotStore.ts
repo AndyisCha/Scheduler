@@ -30,6 +30,7 @@ interface SlotState {
   // 교사 풀 관리
   addTeacherToPool: (pool: 'homeroomKorean' | 'foreign', teacher: string) => void;
   removeTeacherFromPool: (pool: 'homeroomKorean' | 'foreign', teacher: string) => void;
+  clearAllTeachers: () => void;
   
   // 제약조건 관리
   updateTeacherConstraint: (teacherName: string, constraint: Partial<TeacherConstraint>) => void;
@@ -109,6 +110,12 @@ export const useSlotStore = create<SlotState>()(
             foreignPool: state.foreignPool.filter(t => t !== teacher)
           };
         }
+      }),
+      
+      clearAllTeachers: () => set({
+        homeroomKoreanPool: [],
+        foreignPool: [],
+        teacherConstraints: {}
       }),
 
       // 제약조건 관리

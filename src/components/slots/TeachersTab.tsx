@@ -1,8 +1,6 @@
-import { useState, useEffect } from 'react'
-import { getSlotTeachers, addSlotTeacher, removeSlotTeacher } from '../../services/db/slots'
+import { useState } from 'react'
+import { unifiedSlotService } from '../../services/unifiedSlotService'
 import { useToast } from '../Toast'
-import { LoadingState } from '../ErrorStates'
-import type { DbSlotTeacher } from '../../services/db/types'
 import type { SlotConfig } from '../../engine/types'
 
 interface TeachersTabProps {
@@ -12,30 +10,15 @@ interface TeachersTabProps {
 }
 
 export function TeachersTab({ slotId, slotConfig, onUpdate }: TeachersTabProps) {
-  const [teachers, setTeachers] = useState<DbSlotTeacher[]>([])
-  const [isLoading, setIsLoading] = useState(true)
   const [newTeacherName, setNewTeacherName] = useState('')
-  const [newTeacherKind, setNewTeacherKind] = useState<'H_K_POOL' | 'FOREIGN'>('H_K_POOL')
+  const [newTeacherKind, setNewTeacherKind] = useState<'homeroomKorean' | 'foreign'>('homeroomKorean')
   const [isAdding, setIsAdding] = useState(false)
   
   const toast = useToast()
 
-  useEffect(() => {
-    loadTeachers()
-  }, [slotId])
-
-  const loadTeachers = async () => {
-    setIsLoading(true)
-    try {
-      const teachersData = await getSlotTeachers(slotId)
-      setTeachers(teachersData)
-    } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : '선생님 목록을 불러오는 중 오류가 발생했습니다.'
-      toast.error(errorMessage)
-    } finally {
-      setIsLoading(false)
-    }
-  }
+  // Get teachers from slotConfig
+  const homeroomTeachers = slotConfig.teachers?.homeroomKoreanPool || []
+  const foreignTeachers = slotConfig.teachers?.foreignPool || []
 
   const handleAddTeacher = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -45,45 +28,46 @@ export function TeachersTab({ slotId, slotConfig, onUpdate }: TeachersTabProps) 
       return
     }
 
+    const teacherName = newTeacherName.trim()
+
     // Check for duplicates
-    const existingTeacher = teachers.find(t => 
-      t.teacher_name.toLowerCase() === newTeacherName.toLowerCase().trim() && 
-      t.kind === newTeacherKind
-    )
-    
-    if (existingTeacher) {
-      toast.error('같은 종류의 선생님이 이미 존재합니다.')
+    const allTeachers = [...homeroomTeachers, ...foreignTeachers]
+    if (allTeachers.includes(teacherName)) {
+      toast.error('이미 존재하는 선생님입니다.')
       return
     }
 
     setIsAdding(true)
     
     try {
-      const newTeacher = await addSlotTeacher(slotId, newTeacherName.trim(), newTeacherKind)
-      setTeachers(prev => [...prev, newTeacher])
+      console.log('💾 Adding teacher:', { slotId, teacherName, newTeacherKind })
       
-      // Update slot config
-      if (newTeacherKind === 'H_K_POOL') {
-        onUpdate({
-          ...slotConfig,
-          teachers: {
-            ...slotConfig.teachers,
-            homeroomKoreanPool: [...slotConfig.teachers.homeroomKoreanPool, newTeacher.teacher_name]
-          }
-        })
-      } else {
-        onUpdate({
-          ...slotConfig,
-          teachers: {
-            ...slotConfig.teachers,
-            foreignPool: [...slotConfig.teachers.foreignPool, newTeacher.teacher_name]
-          }
-        })
+      // Update slot config first
+      const updatedConfig = { ...slotConfig }
+      if (!updatedConfig.teachers) {
+        updatedConfig.teachers = { homeroomKoreanPool: [], foreignPool: [] }
       }
       
+      if (newTeacherKind === 'homeroomKorean') {
+        updatedConfig.teachers.homeroomKoreanPool = [...homeroomTeachers, teacherName]
+      } else {
+        updatedConfig.teachers.foreignPool = [...foreignTeachers, teacherName]
+      }
+      
+      // Save to database
+      await unifiedSlotService.updateSlotTeachers(slotId, {
+        homeroomKoreanPool: updatedConfig.teachers.homeroomKoreanPool,
+        foreignPool: updatedConfig.teachers.foreignPool
+      })
+      
+      // Update parent component
+      onUpdate(updatedConfig)
+      
       setNewTeacherName('')
-      toast.success('선생님이 추가되었습니다.')
+      toast.success(`${teacherName} 선생님이 추가되었습니다.`)
+      console.log('✅ Teacher added successfully')
     } catch (err) {
+      console.error('❌ Error adding teacher:', err)
       const errorMessage = err instanceof Error ? err.message : '선생님 추가 중 오류가 발생했습니다.'
       toast.error(errorMessage)
     } finally {
@@ -91,157 +75,159 @@ export function TeachersTab({ slotId, slotConfig, onUpdate }: TeachersTabProps) 
     }
   }
 
-  const handleRemoveTeacher = async (teacherId: string, teacherName: string, kind: 'H_K_POOL' | 'FOREIGN') => {
+  const handleRemoveTeacher = async (teacherName: string, kind: 'homeroomKorean' | 'foreign') => {
     if (!window.confirm(`${teacherName} 선생님을 제거하시겠습니까?`)) {
       return
     }
 
     try {
-      await removeSlotTeacher(teacherId)
-      setTeachers(prev => prev.filter(t => t.id !== teacherId))
+      console.log('🗑️ Removing teacher:', { slotId, teacherName, kind })
       
-      // Update slot config
-      if (kind === 'H_K_POOL') {
-        onUpdate({
-          ...slotConfig,
-          teachers: {
-            ...slotConfig.teachers,
-            homeroomKoreanPool: slotConfig.teachers.homeroomKoreanPool.filter(name => name !== teacherName)
-          }
-        })
-      } else {
-        onUpdate({
-          ...slotConfig,
-          teachers: {
-            ...slotConfig.teachers,
-            foreignPool: slotConfig.teachers.foreignPool.filter(name => name !== teacherName)
-          }
-        })
+      // Update slot config first
+      const updatedConfig = { ...slotConfig }
+      if (!updatedConfig.teachers) {
+        updatedConfig.teachers = { homeroomKoreanPool: [], foreignPool: [] }
       }
       
-      toast.success('선생님이 제거되었습니다.')
+      if (kind === 'homeroomKorean') {
+        updatedConfig.teachers.homeroomKoreanPool = homeroomTeachers.filter(name => name !== teacherName)
+      } else {
+        updatedConfig.teachers.foreignPool = foreignTeachers.filter(name => name !== teacherName)
+      }
+      
+      // Save to database
+      await unifiedSlotService.updateSlotTeachers(slotId, {
+        homeroomKoreanPool: updatedConfig.teachers.homeroomKoreanPool,
+        foreignPool: updatedConfig.teachers.foreignPool
+      })
+      
+      // Update parent component
+      onUpdate(updatedConfig)
+      
+      toast.success(`${teacherName} 선생님이 제거되었습니다.`)
+      console.log('✅ Teacher removed successfully')
     } catch (err) {
+      console.error('❌ Error removing teacher:', err)
       const errorMessage = err instanceof Error ? err.message : '선생님 제거 중 오류가 발생했습니다.'
       toast.error(errorMessage)
     }
   }
 
-  const homeroomTeachers = teachers.filter(t => t.kind === 'H_K_POOL')
-  const foreignTeachers = teachers.filter(t => t.kind === 'FOREIGN')
-
-  if (isLoading) {
-    return <LoadingState message="선생님 목록을 불러오는 중..." />
-  }
+  // Teachers are already extracted from slotConfig above
 
   return (
-    <div className="max-w-4xl mx-auto space-y-8">
-      <div className="text-center mb-8">
-        <h3 className="text-xl font-bold text-gray-900 mb-2">선생님 관리</h3>
-        <p className="text-sm text-gray-600">
-          홈룸/한국어 풀과 외국인 선생님을 관리하세요
-        </p>
-      </div>
+    <div className="space-y-8">
+      {/* Header */}
+      <div className="card">
+        <div className="card-header text-center">
+          <h3 className="card-title">선생님 관리</h3>
+          <p className="card-description" style={{marginTop: '10px'}}>
+            홈룸/한국어 풀과 외국인 선생님을 관리하세요
+          </p>
+        </div>
 
-      {/* Add Teacher Form */}
-      <div className="flex flex-col items-center space-y-6">
-        <div className="w-full max-w-2xl bg-gray-700 rounded-lg p-6 border border-gray-600">
-          <div className="space-y-4">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <label htmlFor="teacherName" className="block text-sm font-medium text-gray-300 mb-2">
-                  선생님 이름
-                </label>
-                <input
-                  type="text"
-                  id="teacherName"
-                  value={newTeacherName}
-                  onChange={(e) => setNewTeacherName(e.target.value)}
-                  className="w-full px-4 py-3 bg-gray-800 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
-                  placeholder="선생님 이름을 입력하세요"
-                  disabled={isAdding}
-                />
-              </div>
-              <div>
-                <label htmlFor="teacherKind" className="block text-sm font-medium text-gray-300 mb-2">
-                  종류
-                </label>
-                <select
-                  id="teacherKind"
-                  value={newTeacherKind}
-                  onChange={(e) => setNewTeacherKind(e.target.value as 'H_K_POOL' | 'FOREIGN')}
-                  className="w-full px-4 py-3 bg-gray-800 border border-gray-600 rounded-lg text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
-                  disabled={isAdding}
-                >
-                  <option value="H_K_POOL">홈룸/한국어</option>
-                  <option value="FOREIGN">외국인</option>
-                </select>
-              </div>
+        {/* Add Teacher Form */}
+        <form onSubmit={handleAddTeacher} className="form-container">
+          <div className="form-grid">
+            <div>
+              <label htmlFor="teacherName" className="form-label">
+                선생님 이름
+              </label>
+              <input
+                type="text"
+                id="teacherName"
+                value={newTeacherName}
+                onChange={(e) => setNewTeacherName(e.target.value)}
+                className="dark-input"
+                placeholder="선생님 이름을 입력하세요"
+                disabled={isAdding}
+              />
+            </div>
+            <div>
+              <label htmlFor="teacherKind" className="form-label">
+                종류
+              </label>
+              <select
+                id="teacherKind"
+                value={newTeacherKind}
+                onChange={(e) => setNewTeacherKind(e.target.value as 'homeroomKorean' | 'foreign')}
+                className="dark-input"
+                disabled={isAdding}
+              >
+                <option value="homeroomKorean">홈룸/한국어</option>
+                <option value="foreign">외국인</option>
+              </select>
             </div>
           </div>
-        </div>
-        
-        {/* Circular Add Button */}
-        <form onSubmit={handleAddTeacher} className="flex justify-center">
-          <button
-            type="submit"
-            disabled={isAdding || !newTeacherName.trim()}
-            className="w-20 h-20 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-500 disabled:cursor-not-allowed rounded-full shadow-lg hover:shadow-xl transition-all duration-200 flex items-center justify-center group"
-          >
-            {isAdding ? (
-              <svg className="animate-spin h-8 w-8 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-              </svg>
-            ) : (
-              <svg className="h-8 w-8 text-white group-hover:scale-110 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-              </svg>
-            )}
-          </button>
+          
+          {/* Circular Add Button */}
+          <div className="flex justify-center mt-6">
+            <button
+              type="submit"
+              disabled={isAdding || !newTeacherName.trim()}
+              className="add-teacher-button rounded-full"
+            >
+              {isAdding ? (
+                <div className="flex flex-col items-center gap-1">
+                  <svg className="animate-spin button-icon text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                  </svg>
+                  <span className="button-text text-white">추가중</span>
+                </div>
+              ) : (
+                <div className="flex flex-col items-center gap-1">
+                  <svg className="button-icon text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                  </svg>
+                  <span className="button-text text-white">추가</span>
+                </div>
+              )}
+            </button>
+          </div>
         </form>
       </div>
 
       {/* Teachers Lists */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div className="teachers-grid grid grid-cols-1 md:grid-cols-2 gap-8">
         {/* Homeroom/Korean Teachers */}
-        <div className="bg-gray-700 rounded-lg p-4 border border-gray-600">
-          <div className="flex items-center mb-4">
-            <div className="w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center mr-3">
+        <div className="card">
+          <div className="flex items-center mb-6">
+            <div className="w-12 h-12 bg-blue-500 rounded-full flex items-center justify-center mr-4">
               <span className="text-lg">🏠</span>
             </div>
             <div>
-              <h4 className="text-lg font-bold text-white">홈룸/한국어 선생님</h4>
-              <p className="text-blue-400 font-semibold text-sm">{homeroomTeachers.length}명</p>
+              <h4 className="card-title text-lg">홈룸/한국어 선생님</h4>
+              <span className="badge badge-primary">{homeroomTeachers.length}명</span>
             </div>
           </div>
           
           {homeroomTeachers.length === 0 ? (
-            <div className="text-center py-6">
-              <div className="w-12 h-12 bg-gray-600 rounded-full flex items-center justify-center mx-auto mb-3">
-                <svg className="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z" />
-                </svg>
+            <div className="empty-state">
+              <div className="empty-illustration text-center">
+                <div className="w-16 h-16 bg-gray-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <svg className="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z" />
+                  </svg>
+                </div>
+                <div className="space-y-2">
+                  <p className="text-sm font-medium" style={{color: 'var(--text-secondary)'}}>등록된 홈룸/한국어 선생님이 없습니다</p>
+                  <p className="text-xs" style={{color: 'var(--text-secondary)', opacity: 0.7}}>위의 폼에서 선생님을 추가해보세요</p>
+                </div>
               </div>
-              <p className="text-gray-300 font-medium text-sm">등록된 홈룸/한국어 선생님이 없습니다</p>
-              <p className="text-xs text-gray-400 mt-1">위의 폼에서 선생님을 추가해보세요</p>
             </div>
           ) : (
             <div className="space-y-2">
-              {homeroomTeachers.map((teacher) => (
-                <div
-                  key={teacher.id}
-                  className="flex items-center justify-between bg-gray-600 rounded-lg p-3 border border-gray-500 hover:bg-gray-500 transition-colors"
-                >
-                  <div className="flex items-center">
-                    <div className="w-6 h-6 bg-blue-500 rounded-full flex items-center justify-center mr-2">
-                      <span className="text-white font-semibold text-xs">
-                        {teacher.teacher_name.charAt(0)}
-                      </span>
+              {homeroomTeachers.map((teacherName, index) => (
+                <div key={`homeroom-${index}`} className="teacher-card">
+                  <div className="teacher-info">
+                    <div className="teacher-avatar bg-blue-500">
+                      {teacherName.charAt(0)}
                     </div>
-                    <span className="font-medium text-white text-sm">{teacher.teacher_name}</span>
+                    <span className="teacher-name">{teacherName}</span>
                   </div>
                   <button
-                    onClick={() => handleRemoveTeacher(teacher.id, teacher.teacher_name, teacher.kind)}
+                    onClick={() => handleRemoveTeacher(teacherName, 'homeroomKorean')}
                     className="text-red-400 hover:text-red-300 hover:bg-red-900/20 p-1 rounded transition-colors"
                     title="제거"
                   >
@@ -256,44 +242,43 @@ export function TeachersTab({ slotId, slotConfig, onUpdate }: TeachersTabProps) 
         </div>
 
         {/* Foreign Teachers */}
-        <div className="bg-gray-700 rounded-lg p-4 border border-gray-600">
-          <div className="flex items-center mb-4">
-            <div className="w-10 h-10 bg-green-600 rounded-full flex items-center justify-center mr-3">
+        <div className="card">
+          <div className="flex items-center mb-6">
+            <div className="w-12 h-12 bg-green-500 rounded-full flex items-center justify-center mr-4">
               <span className="text-lg">🌍</span>
             </div>
             <div>
-              <h4 className="text-lg font-bold text-white">외국인 선생님</h4>
-              <p className="text-green-400 font-semibold text-sm">{foreignTeachers.length}명</p>
+              <h4 className="card-title text-lg">외국인 선생님</h4>
+              <span className="badge badge-success">{foreignTeachers.length}명</span>
             </div>
           </div>
           
           {foreignTeachers.length === 0 ? (
-            <div className="text-center py-6">
-              <div className="w-12 h-12 bg-gray-600 rounded-full flex items-center justify-center mx-auto mb-3">
-                <svg className="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z" />
-                </svg>
+            <div className="empty-state">
+              <div className="empty-illustration text-center">
+                <div className="w-16 h-16 bg-gray-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <svg className="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z" />
+                  </svg>
+                </div>
+                <div className="space-y-2">
+                  <p className="text-sm font-medium" style={{color: 'var(--text-secondary)'}}>등록된 외국인 선생님이 없습니다</p>
+                  <p className="text-xs" style={{color: 'var(--text-secondary)', opacity: 0.7}}>위의 폼에서 선생님을 추가해보세요</p>
+                </div>
               </div>
-              <p className="text-gray-300 font-medium text-sm">등록된 외국인 선생님이 없습니다</p>
-              <p className="text-xs text-gray-400 mt-1">위의 폼에서 선생님을 추가해보세요</p>
             </div>
           ) : (
             <div className="space-y-2">
-              {foreignTeachers.map((teacher) => (
-                <div
-                  key={teacher.id}
-                  className="flex items-center justify-between bg-gray-600 rounded-lg p-3 border border-gray-500 hover:bg-gray-500 transition-colors"
-                >
-                  <div className="flex items-center">
-                    <div className="w-6 h-6 bg-green-500 rounded-full flex items-center justify-center mr-2">
-                      <span className="text-white font-semibold text-xs">
-                        {teacher.teacher_name.charAt(0)}
-                      </span>
+              {foreignTeachers.map((teacherName, index) => (
+                <div key={`foreign-${index}`} className="teacher-card">
+                  <div className="teacher-info">
+                    <div className="teacher-avatar bg-green-500">
+                      {teacherName.charAt(0)}
                     </div>
-                    <span className="font-medium text-white text-sm">{teacher.teacher_name}</span>
+                    <span className="teacher-name">{teacherName}</span>
                   </div>
                   <button
-                    onClick={() => handleRemoveTeacher(teacher.id, teacher.teacher_name, teacher.kind)}
+                    onClick={() => handleRemoveTeacher(teacherName, 'foreign')}
                     className="text-red-400 hover:text-red-300 hover:bg-red-900/20 p-1 rounded transition-colors"
                     title="제거"
                   >

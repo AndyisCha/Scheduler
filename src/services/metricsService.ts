@@ -80,6 +80,24 @@ class MetricsService {
    */
   private async storeMetricsInDatabase(metrics: EngineMetrics): Promise<void> {
     try {
+      // 임시로 메트릭스 저장을 비활성화 (generated_schedules 테이블에 metrics 컬럼이 없음)
+      console.log('📊 Metrics storage temporarily disabled - metrics column not found in generated_schedules table');
+      console.log('📊 Would store metrics:', {
+        generation_time_ms: metrics.generationTimeMs,
+        total_assignments: metrics.totalAssignments,
+        assigned_count: metrics.assignedCount,
+        unassigned_count: metrics.unassignedCount,
+        warnings_count: metrics.warningsCount,
+        teachers_count: metrics.teachersCount,
+        classes_count: metrics.classesCount,
+        engine_version: metrics.engineVersion,
+        recorded_at: metrics.timestamp,
+        user_id: metrics.userId,
+        user_role: metrics.userRole,
+      });
+      
+      // TODO: 데이터베이스 스키마에 metrics 컬럼 추가 후 활성화
+      /*
       const { error } = await supabase
         .from('generated_schedules')
         .update({
@@ -104,6 +122,7 @@ class MetricsService {
       if (error) {
         throw new Error(`Failed to store metrics: ${error.message}`);
       }
+      */
     } catch (error) {
       console.error('Database metrics storage failed:', error);
       sentryService.captureException(error as Error, { 

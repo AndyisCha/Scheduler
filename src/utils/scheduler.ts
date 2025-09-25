@@ -183,16 +183,13 @@ function pickTeacherK(
     disallowOwnHAsK = false
   } = opts;
 
-  // candidate set
-  let candidates = [...(pools.homeroomKoreanPool || [])];
+  // candidate set - 담임 교사는 제외
+  let candidates = [...(pools.homeroomKoreanPool || [])].filter(t => t !== ownH);
 
   if (includeHInK) {
     const allHs = Object.values(homeroomsMap);
-    if (preferOtherHForK || disallowOwnHAsK) {
-      candidates.push(...allHs.filter(t => t !== ownH));
-    } else {
-      candidates.push(...allHs);
-    }
+    // 담임 교사는 절대 한국어 수업에 배정되지 않도록 필터링
+    candidates.push(...allHs.filter(t => t !== ownH));
   }
 
   // Filter by availability, busy, and fairness (min load first)
@@ -200,6 +197,13 @@ function pickTeacherK(
     const c = constraints[t];
     if (c?.unavailable && has(c.unavailable, `${day}|${period}`)) return false;
     if (!busy.can(day, period, t)) return false;
+    
+    // 담임 교사는 절대 한국어 수업에 배정되지 않도록 강력한 제약
+    if (t === ownH) {
+      console.log(`🚫 Blocking homeroom teacher ${ownH} from Korean class ${_classId}`);
+      return false;
+    }
+    
     return true;
   });
 
@@ -248,9 +252,16 @@ function pickTeacherH(
 //   return rolePattern[base];
 // }
 function roleAt2(rolePattern: Role[], dayIdx: number, classIdx: number, capacity: number): [Role, Role] {
-  const phase = Math.floor(classIdx / Math.max(1, capacity));
+  // Fix: 각 클래스가 요일별로 다른 역할을 가지도록 phase 계산 수정
+  // 월/수/금에 같은 클래스가 같은 역할을 가지는 문제 해결
+  const phase = (dayIdx + classIdx) % Math.max(1, capacity);
   const base = (dayIdx * 2 + phase) % 6;
-  return [rolePattern[base], rolePattern[(base+1)%6]];
+  const role1 = rolePattern[base];
+  const role2 = rolePattern[(base+1)%6];
+  
+  console.log(`🔍 roleAt2: dayIdx=${dayIdx}, classIdx=${classIdx}, capacity=${capacity}, phase=${phase}, base=${base}, roles=[${role1}, ${role2}]`);
+  
+  return [role1, role2];
 }
 
 // ---------- Main ----------
@@ -325,6 +336,10 @@ export function createWeeklySchedule(slot: SchedulerSlot): ScheduleResult {
     1: "", 2: "16:00–16:15", 3: "17:50–18:05", 4: "20:00–20:15"
   };
 
+    // Custom exam periods from global options
+    const customExamPeriods = globalOptions.examPeriods || {};
+    console.log('🔍 Custom exam periods:', customExamPeriods);
+
   // Role capacities
   const F_CAP = Math.max(1, pools.foreignPool.length);
   const K_CAP = Math.max(1, pools.homeroomKoreanPool.length); // used for staggering only
@@ -344,15 +359,35 @@ export function createWeeklySchedule(slot: SchedulerSlot): ScheduleResult {
       if (round !== 1) {
         classes.forEach((cid, _classIdx) => {
           const h = homeroomsMap[cid];
-          // exam occupies the exam time but not a numbered period; we still record it
-          // Clash rule: same round exam happens at the same time, but one teacher can only proctor one class per round
-          // We'll just not “busy” lock numbered periods; only record assignment.
-          push(day, {
-            classId: cid, round, period: pA, // anchor to first period slot for table proximity
-            time: examTime[round],
-            role: "EXAM",
-            teacher: h,
-          });
+          
+          // Check for custom exam periods for this day
+          const customExams = customExamPeriods[day] || [];
+          console.log(`🔍 [${day}] Custom exams for class ${cid}:`, customExams);
+          
+          if (customExams.length > 0) {
+            // Use custom exam periods (교시 사이)
+            customExams.forEach(examPeriod => {
+              // 교시 사이에 시험시간을 배치하기 위해 소수점 period 사용
+              const betweenPeriod = examPeriod; // 2.5는 이미 2교시와 3교시 사이를 의미
+              console.log(`📝 Adding exam for ${cid} at period ${betweenPeriod} (between ${Math.floor(examPeriod)} and ${Math.ceil(examPeriod)})`);
+              push(day, {
+                classId: cid, round, period: betweenPeriod as Period,
+                time: `시험시간 (${Math.floor(examPeriod)}교시-${Math.ceil(examPeriod)}교시 사이)`,
+                role: "EXAM",
+                teacher: h,
+                isExam: true,
+              });
+            });
+          } else {
+            // Use default exam time (기존 로직)
+            push(day, {
+              classId: cid, round, period: pA, // anchor to first period slot for table proximity
+              time: examTime[round],
+              role: "EXAM",
+              teacher: h,
+              isExam: true,
+            });
+          }
         });
       }
 
@@ -363,6 +398,9 @@ export function createWeeklySchedule(slot: SchedulerSlot): ScheduleResult {
           round === 4
             ? roleAt2(pattern, dayIdx, classIdx, Math.max(1, K_CAP)) // no F in round4
             : roleAt2(pattern, dayIdx, classIdx, Math.max(1, F_CAP));
+        
+        // Debug logging
+        console.log(`🔍 [${day} R${round}] Class ${cid} (idx:${classIdx}): roles [${r1}, ${r2}], homeroom: ${h}`);
 
         // first slot
         const assignOne = (role: Role, period: Period) => {

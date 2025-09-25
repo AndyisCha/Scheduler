@@ -1,7 +1,7 @@
 // Global options management panel
 import { useState } from 'react'
 
-import type { GlobalOptions } from '../../engine/types'
+import type { GlobalOptions } from '../../types/scheduler'
 
 interface GlobalOptionsPanelProps {
   options: GlobalOptions
@@ -31,7 +31,9 @@ export function GlobalOptionsPanel({ options, onUpdate, onSave, isSaving }: Glob
       includeHInK: true,
       preferOtherHForK: false,
       disallowOwnHAsK: true,
-      roundClassCounts: { '1': 3, '2': 3, '3': 3, '4': 3 }
+      roundClassCounts: { '1': 3, '2': 3, '3': 3, '4': 3 },
+      examPeriods: {},
+      classNames: {}
     }
     setLocalOptions(defaultOptions)
     onUpdate(defaultOptions)
@@ -130,6 +132,74 @@ export function GlobalOptionsPanel({ options, onUpdate, onSave, isSaving }: Glob
                   value={count}
                   onChange={(e) => updateRoundClassCount(round, parseInt(e.target.value) || 1)}
                   className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* Exam Periods */}
+      <div className="space-y-4">
+        <h4 className="font-medium text-gray-900">시험시간 설정</h4>
+        
+        <div className="bg-gray-50 p-4 rounded-lg">
+          <p className="text-sm text-gray-600 mb-4">
+            각 요일별로 시험시간을 교시 사이에 설정할 수 있습니다. (예: 2.5, 4.5)
+          </p>
+          
+          <div className="space-y-3">
+            {['월', '수', '금'].map(day => (
+              <div key={day} className="flex items-center space-x-4">
+                <label className="w-16 text-sm font-medium text-gray-700">{day}요일</label>
+                <input
+                  type="text"
+                  placeholder="예: 2.5, 4.5"
+                  value={(localOptions.examPeriods?.[day as '월' | '수' | '금'] || []).join(', ')}
+                  onChange={(e) => {
+                    const periods = e.target.value
+                      .split(',')
+                      .map(p => parseFloat(p.trim()))
+                      .filter(p => !isNaN(p) && p > 0)
+                    updateOption('examPeriods', {
+                      ...localOptions.examPeriods,
+                      [day]: periods
+                    })
+                  }}
+                  className="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* Class Names */}
+      <div className="space-y-4">
+        <h4 className="font-medium text-gray-900">반이름 설정</h4>
+        
+        <div className="bg-gray-50 p-4 rounded-lg">
+          <p className="text-sm text-gray-600 mb-4">
+            각 클래스 ID에 대한 실제 반이름을 설정할 수 있습니다.
+          </p>
+          
+          <div className="space-y-3">
+            {Object.keys(localOptions.roundClassCounts).flatMap(round => 
+              Array.from({ length: localOptions.roundClassCounts[parseInt(round)] }, (_, i) => `R${round}C${i + 1}`)
+            ).map(classId => (
+              <div key={classId} className="flex items-center space-x-4">
+                <label className="w-20 text-sm font-medium text-gray-700">{classId}</label>
+                <input
+                  type="text"
+                  placeholder={`${classId} 반이름`}
+                  value={localOptions.classNames?.[classId] || ''}
+                  onChange={(e) => {
+                    updateOption('classNames', {
+                      ...localOptions.classNames,
+                      [classId]: e.target.value
+                    })
+                  }}
+                  className="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
               </div>
             ))}

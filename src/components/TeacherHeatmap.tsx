@@ -33,9 +33,9 @@ export const TeacherHeatmap: React.FC<TeacherHeatmapProps> = ({ scheduleResult }
     // Initialize availability for all teachers
     allTeachers.forEach(teacher => {
       availability[teacher] = {
-        월: { 1: false, 2: false, 3: false, 4: false, 5: false, 6: false, 7: false, 8: false },
-        수: { 1: false, 2: false, 3: false, 4: false, 5: false, 6: false, 7: false, 8: false },
-        금: { 1: false, 2: false, 3: false, 4: false, 5: false, 6: false, 7: false, 8: false },
+        월: { 1: false, 1.5: false, 2: false, 2.5: false, 3: false, 3.5: false, 4: false, 4.5: false, 5: false, 5.5: false, 6: false, 6.5: false, 7: false, 7.5: false, 8: false },
+        수: { 1: false, 1.5: false, 2: false, 2.5: false, 3: false, 3.5: false, 4: false, 4.5: false, 5: false, 5.5: false, 6: false, 6.5: false, 7: false, 7.5: false, 8: false },
+        금: { 1: false, 1.5: false, 2: false, 2.5: false, 3: false, 3.5: false, 4: false, 4.5: false, 5: false, 5.5: false, 6: false, 6.5: false, 7: false, 7.5: false, 8: false },
       };
     });
 

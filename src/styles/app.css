@@ -1,0 +1,423 @@
+/* 세련된 UI/UX 스타일 */
+
+/* 컬러 변수 */
+:root {
+  --bg-primary: #121212;
+  --bg-secondary: #1e1e1e;
+  --bg-tertiary: #2a2a2a;
+  --text-primary: #ffffff;
+  --text-secondary: #aaaaaa;
+  --text-accent: #4dabf7;
+  --border-subtle: #333333;
+  --shadow-subtle: 0 2px 8px rgba(0, 0, 0, 0.3);
+  --shadow-hover: 0 4px 16px rgba(0, 0, 0, 0.4);
+}
+
+/* 최상위 콘텐츠 래퍼 */
+.app-container {
+  max-width: 1100px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 24px 20px;
+  display: block;
+  background-color: var(--bg-primary);
+  min-height: 100vh;
+}
+
+/* 상단 탭/버튼 행 */
+.top-actions {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  row-gap: 12px;
+  margin: 24px 0 32px;
+  padding: 0 8px;
+}
+
+/* 입력 폼 영역 */
+.form-container {
+  max-width: 900px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* 폼 필드 그리드 */
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+@media (max-width: 768px) {
+  .form-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+}
+
+/* 카드 스타일 */
+.card {
+  background-color: var(--bg-secondary);
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: var(--shadow-subtle);
+  border: 1px solid var(--border-subtle);
+}
+
+.card-header {
+  margin-bottom: 20px;
+}
+
+.card-title {
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 8px;
+}
+
+.card-description {
+  font-size: 14px;
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+
+/* 빈 상태 섹션 */
+.empty-state {
+  min-height: 240px;
+  display: grid;
+  place-items: center;
+  padding: 20px;
+}
+
+/* 빈 상태 일러스트 */
+.empty-illustration {
+  max-width: 120px;
+  max-height: 120px;
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+}
+
+.empty-illustration svg,
+.empty-illustration img {
+  max-width: 120px;
+  max-height: 120px;
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+}
+
+.empty-illustration .w-12,
+.empty-illustration .h-12 {
+  width: 3rem !important;
+  height: 3rem !important;
+}
+
+/* 다크 테마 컴포넌트 스타일 */
+.dark-input {
+  border-radius: 8px;
+  border: 1px solid #2e2e2e;
+  background-color: var(--bg-tertiary);
+  color: #e0e0e0;
+  padding: 14px 16px;
+  transition: all 0.2s ease;
+  font-size: 14px;
+  height: 48px;
+  width: 100%;
+}
+
+.dark-input:focus {
+  outline: none;
+  border-color: var(--text-accent);
+  box-shadow: 0 0 0 3px rgba(77, 171, 247, 0.1);
+  background-color: var(--bg-secondary);
+}
+
+.dark-input::placeholder {
+  color: var(--text-secondary);
+}
+
+/* 폼 레이블 스타일 */
+.form-label {
+  display: block;
+  font-size: 14px;
+  font-weight: 500;
+  color: #e0e0e0;
+  margin-bottom: 8px;
+}
+
+/* 배지 스타일 */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: 11px;
+  font-weight: 600;
+  background-color: var(--bg-tertiary);
+  color: var(--text-primary);
+  border: 1px solid var(--border-subtle);
+  min-width: 32px;
+  justify-content: center;
+}
+
+.badge-primary {
+  background-color: var(--text-accent);
+  color: var(--text-primary);
+  border-color: var(--text-accent);
+}
+
+.badge-success {
+  background-color: #10b981;
+  color: white;
+  border-color: #10b981;
+}
+
+/* 선생님 카드 스타일 */
+.teacher-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  background-color: var(--bg-tertiary);
+  border: 1px solid #2e2e2e;
+  border-radius: 8px;
+  margin-bottom: 8px;
+  transition: all 0.2s ease;
+}
+
+.teacher-card:hover {
+  background-color: var(--bg-secondary);
+  border-color: #3e3e3e;
+}
+
+.teacher-card:last-child {
+  margin-bottom: 0;
+}
+
+.teacher-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.teacher-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  font-size: 12px;
+  color: white;
+}
+
+.teacher-name {
+  font-size: 14px;
+  font-weight: 500;
+  color: #e0e0e0;
+}
+
+/* 원형 추가 버튼 강조 */
+.add-teacher-button {
+  background: linear-gradient(135deg, #4dabf7 0%, #339af0 100%) !important;
+  border: 2px solid #4dabf7 !important;
+  color: white !important;
+  box-shadow: 0 6px 20px rgba(77, 171, 247, 0.4) !important;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  font-weight: 600 !important;
+  font-size: 14px !important;
+  width: 100px !important;
+  height: 100px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 4px !important;
+}
+
+.add-teacher-button:hover {
+  background: linear-gradient(135deg, #339af0 0%, #228be6 100%) !important;
+  border-color: #339af0 !important;
+  box-shadow: 0 8px 25px rgba(77, 171, 247, 0.5) !important;
+  transform: translateY(-3px) scale(1.05) !important;
+}
+
+.add-teacher-button:active {
+  transform: translateY(-1px) scale(1.02) !important;
+  box-shadow: 0 4px 15px rgba(77, 171, 247, 0.4) !important;
+}
+
+.add-teacher-button:disabled {
+  background: #6b7280 !important;
+  border-color: #6b7280 !important;
+  box-shadow: none !important;
+  transform: none !important;
+  cursor: not-allowed !important;
+  opacity: 0.6 !important;
+}
+
+.add-teacher-button .button-icon {
+  width: 24px !important;
+  height: 24px !important;
+}
+
+.add-teacher-button .button-text {
+  font-size: 12px !important;
+  font-weight: 600 !important;
+  line-height: 1 !important;
+}
+
+.dark-button {
+  border-radius: 8px;
+  border: 1px solid var(--border-weak, #343434);
+  background-color: #1f2937;
+  color: #ffffff;
+  padding: 12px 24px;
+  transition: all 0.2s ease;
+}
+
+.dark-button:hover {
+  background-color: #374151;
+  border-color: #4b5563;
+}
+
+.dark-button:disabled {
+  background-color: #6b7280;
+  border-color: #6b7280;
+  cursor: not-allowed;
+}
+
+/* 탭 버튼 스타일 */
+.tab-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 16px 20px;
+  border-radius: 10px;
+  border: 1px solid var(--border-subtle);
+  background-color: var(--bg-secondary);
+  color: var(--text-secondary);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 14px;
+  min-width: 160px;
+  height: 48px;
+  box-shadow: var(--shadow-subtle);
+}
+
+.tab-button:hover {
+  background-color: var(--bg-tertiary);
+  border-color: var(--text-accent);
+  color: var(--text-primary);
+  box-shadow: var(--shadow-hover);
+  transform: translateY(-2px);
+}
+
+.tab-button.active {
+  background-color: var(--text-accent);
+  border-color: var(--text-accent);
+  color: var(--text-primary);
+  box-shadow: 0 6px 20px rgba(77, 171, 247, 0.4);
+  transform: translateY(-1px);
+  font-weight: 600;
+}
+
+.tab-button .tab-icon {
+  font-size: 16px;
+  opacity: 0.8;
+}
+
+.tab-button.active .tab-icon {
+  opacity: 1;
+}
+
+/* 반응형 조정 */
+@media (max-width: 1024px) {
+  .app-container {
+    padding: 20px 16px;
+  }
+  
+  .card {
+    padding: 20px;
+  }
+}
+
+@media (max-width: 768px) {
+  .app-container {
+    padding: 16px 12px;
+  }
+  
+  .top-actions {
+    gap: 8px;
+    row-gap: 10px;
+    margin: 20px 0 24px;
+  }
+  
+  .tab-button {
+    padding: 14px 16px;
+    font-size: 13px;
+    min-width: 140px;
+    height: 44px;
+  }
+  
+  .card {
+    padding: 16px;
+  }
+  
+  .card-title {
+    font-size: 18px;
+  }
+  
+  /* 모바일에서 리스트를 세로 스택으로 */
+  .teachers-grid {
+    grid-template-columns: 1fr !important;
+    gap: 16px;
+  }
+}
+
+@media (max-width: 480px) {
+  .app-container {
+    padding: 12px 8px;
+  }
+  
+  .top-actions {
+    gap: 8px;
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .tab-button {
+    width: 100%;
+    justify-content: center;
+    min-width: auto;
+    height: 44px;
+  }
+  
+  .form-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+  
+  .dark-input {
+    height: 44px;
+    padding: 12px 14px;
+  }
+  
+  .teacher-card {
+    padding: 10px 12px;
+  }
+  
+  .teacher-avatar {
+    width: 28px;
+    height: 28px;
+    font-size: 11px;
+  }
+}

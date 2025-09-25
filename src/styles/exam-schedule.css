@@ -1,0 +1,169 @@
+/* 시험시간 표시를 위한 특별한 CSS */
+
+/* 시험시간 카드 스타일 */
+.exam-period-card {
+  position: relative;
+  margin: 12px 0;
+  padding: 12px;
+  background: linear-gradient(135deg, #f3e8ff 0%, #e9d5ff 100%);
+  border: 2px solid #c084fc;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(139, 92, 246, 0.1);
+}
+
+/* 교시 사이 구분선 */
+.exam-period-card::before {
+  content: '';
+  position: absolute;
+  top: -6px;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent 0%, #c084fc 20%, #a855f7 50%, #c084fc 80%, transparent 100%);
+  border-radius: 1px;
+}
+
+/* 시험시간 아이콘 */
+.exam-period-card .exam-icon {
+  display: inline-block;
+  margin-right: 8px;
+  font-size: 16px;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.7;
+  }
+}
+
+/* 시험시간 텍스트 스타일 */
+.exam-period-card .exam-title {
+  font-weight: 600;
+  color: #6b21a8;
+  font-size: 14px;
+  margin-bottom: 4px;
+}
+
+.exam-period-card .exam-time {
+  font-size: 12px;
+  color: #7c3aed;
+  margin-bottom: 2px;
+}
+
+.exam-period-card .exam-teacher {
+  font-size: 11px;
+  color: #8b5cf6;
+  font-style: italic;
+}
+
+/* 호버 효과 */
+.exam-period-card:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(139, 92, 246, 0.2);
+  transition: all 0.2s ease;
+}
+
+/* 교시 사이 시험시간 표시를 위한 특별한 레이아웃 */
+.exam-between-periods {
+  position: relative;
+  margin: 16px 0;
+  padding: 8px 0;
+}
+
+.exam-between-periods::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 20%;
+  right: 20%;
+  height: 1px;
+  background: #d1d5db;
+  z-index: 1;
+}
+
+.exam-between-periods::after {
+  content: '📝';
+  position: absolute;
+  top: -8px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #f9fafb;
+  padding: 0 8px;
+  font-size: 12px;
+  z-index: 2;
+}
+
+/* 시험시간이 교시 사이에 있을 때의 특별한 표시 */
+.schedule-grid .exam-in-between {
+  grid-column: 1 / -1;
+  margin: 8px 0;
+  border-top: 2px dashed #c084fc;
+  border-bottom: 2px dashed #c084fc;
+  padding: 12px;
+  background: #faf5ff;
+  border-radius: 6px;
+  position: relative;
+}
+
+.schedule-grid .exam-in-between::before {
+  content: '시험시간';
+  position: absolute;
+  top: -10px;
+  left: 20px;
+  background: #faf5ff;
+  padding: 0 8px;
+  font-size: 11px;
+  font-weight: 600;
+  color: #7c3aed;
+}
+
+/* 반응형 디자인 */
+@media (max-width: 768px) {
+  .exam-period-card {
+    margin: 8px 0;
+    padding: 10px;
+  }
+  
+  .exam-period-card .exam-title {
+    font-size: 13px;
+  }
+  
+  .exam-period-card .exam-time,
+  .exam-period-card .exam-teacher {
+    font-size: 11px;
+  }
+}
+
+/* 다크 모드 지원 */
+@media (prefers-color-scheme: dark) {
+  .exam-period-card {
+    background: linear-gradient(135deg, #1e1b4b 0%, #312e81 100%);
+    border-color: #6366f1;
+  }
+  
+  .exam-period-card .exam-title {
+    color: #c4b5fd;
+  }
+  
+  .exam-period-card .exam-time {
+    color: #a5b4fc;
+  }
+  
+  .exam-period-card .exam-teacher {
+    color: #818cf8;
+  }
+  
+  .schedule-grid .exam-in-between {
+    background: #1e1b4b;
+    border-color: #6366f1;
+  }
+  
+  .schedule-grid .exam-in-between::before {
+    background: #1e1b4b;
+    color: #c4b5fd;
+  }
+}

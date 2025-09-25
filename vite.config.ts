@@ -4,7 +4,12 @@ import { resolve } from 'path'
 
 // https://vite.dev/config/
 export default defineConfig(({ mode }) => ({
-  plugins: [react()],
+  plugins: [
+    react({
+      // React Fast Refresh 최적화
+      fastRefresh: true,
+    }),
+  ].filter(Boolean),
   resolve: {
     alias: {
       '@': resolve(__dirname, 'src'),
@@ -15,6 +20,10 @@ export default defineConfig(({ mode }) => ({
     target: 'esnext',
     minify: 'terser',
     sourcemap: mode === 'development',
+    // CSS 코드 분할
+    cssCodeSplit: true,
+    // 에셋 인라인 임계값
+    assetsInlineLimit: 4096,
     rollupOptions: {
       output: {
         // Code splitting for better caching
@@ -33,7 +42,24 @@ export default defineConfig(({ mode }) => ({
             if (id.includes('zustand') || id.includes('date-fns')) {
               return 'vendor-utils';
             }
+            if (id.includes('lodash') || id.includes('moment')) {
+              return 'vendor-lodash';
+            }
             return 'vendor';
+          }
+          
+          // 애플리케이션 코드 분할
+          if (id.includes('src/pages/')) {
+            const pageName = id.split('src/pages/')[1].split('/')[0];
+            return `page-${pageName}`;
+          }
+          
+          if (id.includes('src/components/')) {
+            return 'components';
+          }
+          
+          if (id.includes('src/services/')) {
+            return 'services';
           }
         },
         // Chunk naming for better caching
@@ -62,6 +88,14 @@ export default defineConfig(({ mode }) => ({
   server: {
     port: 5173,
     host: true,
+    // HMR 최적화
+    hmr: {
+      overlay: true,
+    },
+    // 개발 시 미리 번들링
+    fs: {
+      allow: ['..']
+    }
   },
   // Preview configuration
   preview: {
